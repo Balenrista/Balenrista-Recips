@@ -133,8 +133,9 @@
     </div>
 
     <!-- ================= แท็บ 2: Print PDF ================= -->
-    <div id="PrintTab" class="tabcontent space-y-4" style="display:none;">
+        <div id="PrintTab" class="tabcontent space-y-4" style="display:none;">
       <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 space-y-5 shadow-lg">
+        
         <div class="flex items-center gap-2 mb-2">
           <i class="ph-bold ph-printer text-[#726E68]"></i>
           <h3 class="text-white font-medium">สร้างเอกสาร PDF</h3>
@@ -150,6 +151,17 @@
         <button id="btnPDF" onclick="runPDF()" class="w-full bg-[#371E1E] hover:bg-[#5a2e2e] text-white py-4 rounded-xl font-bold tracking-wide transition duration-300 flex items-center justify-center gap-2">
           <i class="ph-bold ph-paper-plane-tilt text-xl"></i> สั่งปริ้น PDF & ส่งเมล
         </button>
+
+        <hr class="border-[#33312F] my-4">
+        <div class="flex items-center justify-between mt-4">
+          <h3 class="text-white font-medium text-sm">รายการเอกสาร</h3>
+          <button onclick="loadOrderList()" class="bg-[#33312F] hover:bg-[#726E68] text-white px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1">
+            <i class="ph-bold ph-arrows-clockwise"></i> อัปเดต
+          </button>
+        </div>
+        <div id="orderList" class="mt-2 space-y-2 max-h-60 overflow-y-auto custom-scrollbar pr-1">
+          </div>
+
       </div>
     </div>
 
@@ -179,7 +191,7 @@
   <!-- Javascript -->
   <script>
     // 🟢 เปลี่ยน API_URL ตรงนี้ให้เป็นของคุณ 🟢
-    const API_URL = "https://script.google.com/macros/s/AKfycbz54LD3gkCX0Yz1GU6m0hoyrscvsDvT4giNBwTrr64tUlcjsEKzz_bk2iFYP-VYdSTf/exec"; 
+    const API_URL = "https://script.google.com/macros/s/AKfycbyoawhIUKBHxZ0IFnkPeU1wH84EojEqdvy_hSfcRTEhpXhFb8p_qUa9iqfuEPw99bOx/exec"; 
     
     let menuDataList = [];
     let currentItems = [];
@@ -330,6 +342,43 @@
         ctype: document.getElementById("cType").value, cemail: document.getElementById("cEmail").value, cphone: document.getElementById("cPhone").value
       };
       sendToAPI(payload, "SAVING CUSTOMER...");
+    }
+    // 🟢 เอาโค้ดมาวางแทรกตรงนี้เลยครับ! ก่อนปิด </script> 🟢
+    function loadOrderList() {
+      setLoading(true, "LOADING ORDERS...");
+      
+      fetch(API_URL + "?action=getOrders") 
+      .then(res => res.json())
+      .then(data => {
+        // เรียงลำดับเอาอันที่ยังไม่ได้ปริ้นขึ้นก่อน
+        data.sort((a, b) => {
+          if (a.printed !== b.printed) {
+            return a.printed ? 1 : -1; 
+          }
+          // ถ้าอยากให้บิลล่าสุดขึ้นก่อนด้วย ให้เพิ่มบรรทัดนี้ครับ:
+          return b.doc.localeCompare(a.doc); 
+        });
+
+        let listDiv = document.getElementById("orderList");
+        if(data.length === 0) {
+           listDiv.innerHTML = `<div class="text-center text-[#726E68] text-xs py-4">ไม่มีข้อมูลรายการ</div>`;
+           return;
+        }
+
+        listDiv.innerHTML = data.map(o => `
+          <div class="flex justify-between items-center p-3 bg-[#0A0A0A] rounded-lg border ${o.printed ? 'border-green-900/30' : 'border-red-900/50'} cursor-pointer hover:bg-[#1A1A1A] transition" onclick="document.getElementById('pdfDocNo').value='${o.doc}'">
+            <div>
+              <div class="text-white font-bold text-sm">${o.doc}</div>
+              <div class="text-[10px] text-[#726E68]">วันที่: ${o.date || '-'}</div>
+            </div>
+            <span class="${o.printed ? 'text-green-500' : 'text-red-500'} font-medium text-xs bg-[#33312F]/50 px-2 py-1 rounded">
+              ${o.printed ? '✓ ปริ้นแล้ว' : '⌛ รอปริ้น'}
+            </span>
+          </div>
+        `).join('');
+      })
+      .catch(err => alert("Error: ไม่สามารถดึงข้อมูลได้ โปรดตรวจสอบ Code.gs ฝั่งหลังบ้าน"))
+      .finally(() => setLoading(false));
     }
   </script>
 </body>
