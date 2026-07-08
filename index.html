@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Balenrista - Order System</title>
+  <!-- นำเข้า Tailwind CSS และ Phosphor Icons ให้ตรงกับธีมเดิม -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Sarabun', sans-serif; background-color: #0A0A0A; color: #B7B4AE; }
+    
+    /* ระบบ Loading Animation รูปใบไม้ที่คุณชอบ */
+    .loader { display: flex; gap: 8px; margin-bottom: 15px; }
+    .leaf { width: 15px; height: 15px; background-color: #726E68; border-radius: 50% 0 50% 50%; animation: spin 1.5s linear infinite; }
+    .leaf:nth-child(2) { animation-delay: 0.2s; }
+    .leaf:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes spin { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.2); background-color: #B7B4AE; } 100% { transform: rotate(360deg) scale(1); } }
+    
+    /* ปรับแต่ง Scrollbar ให้เข้ากับ Dark Mode */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0A0A0A; }
+    ::-webkit-scrollbar-thumb { background: #33312F; border-radius: 3px; }
+    
+    /* สไตล์ปุ่ม Tab */
+    .tab-btn { transition: all 0.3s ease; }
+    .tab-btn.active { background-color: #33312F; color: #fff; border-color: #726E68; }
+  </style>
+</head>
+<body class="p-4 md:p-6 pb-12">
+
+  <!-- Loading Screen (ซ่อนไว้ เริ่มทำงานเมื่อมีการบันทึก/โหลด) -->
+  <div id="loading" class="fixed inset-0 bg-[#0A0A0A]/90 z-[999] flex flex-col items-center justify-center backdrop-blur-sm" style="display: none;">
+    <div class="loader">
+      <div class="leaf"></div><div class="leaf"></div><div class="leaf"></div>
+    </div>
+    <p class="text-[#726E68] font-bold tracking-widest text-sm animate-pulse" id="loading-text">SYNCING DATA...</p>
+  </div>
+
+  <div class="max-w-xl mx-auto space-y-6">
+    
+    <!-- ส่วนหัว Header -->
+    <div class="flex items-center justify-center mb-6 mt-4">
+      <h1 class="text-2xl font-bold text-white tracking-widest flex items-center gap-2">
+        <i class="ph-fill ph-coffee text-[#726E68]"></i> BALENRISTA
+      </h1>
+    </div>
+
+    <!-- เมนู Tabs สไตล์ Segmented Control แบบพรีเมียม -->
+    <div class="flex space-x-2 bg-[#1A1A1A] p-1.5 rounded-xl border border-[#33312F]">
+      <button class="tab-btn active flex-1 py-3 rounded-lg text-sm font-medium text-[#726E68] flex flex-col items-center gap-1" onclick="openTab(event, 'OrderTab')">
+        <i class="ph-bold ph-receipt text-xl"></i> รับออเดอร์
+      </button>
+      <button class="tab-btn flex-1 py-3 rounded-lg text-sm font-medium text-[#726E68] flex flex-col items-center gap-1" onclick="openTab(event, 'PrintTab')">
+        <i class="ph-bold ph-printer text-xl"></i> ปริ้นท์ PDF
+      </button>
+      <button class="tab-btn flex-1 py-3 rounded-lg text-sm font-medium text-[#726E68] flex flex-col items-center gap-1" onclick="openTab(event, 'CustomerTab')">
+        <i class="ph-bold ph-users text-xl"></i> ฐานลูกค้า
+      </button>
+    </div>
+
+    <!-- ================= แท็บ 1: รับออเดอร์ (Orders) ================= -->
+    <div id="OrderTab" class="tabcontent space-y-4" style="display:block;">
+      
+      <!-- กล่อง 1: ข้อมูลบิลหลัก -->
+      <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 space-y-4 shadow-lg">
+        <div class="flex items-center gap-2 mb-2">
+          <i class="ph-bold ph-file-text text-[#726E68]"></i>
+          <h3 class="text-white font-medium">ข้อมูลบิลหลัก</h3>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <input type="text" id="oDoc" class="col-span-2 bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-[#B7B4AE] focus:border-[#726E68] outline-none transition" placeholder="เลขที่เอกสาร">
+          <input type="date" id="oDate" class="bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-[#B7B4AE] focus:border-[#726E68] outline-none transition">
+          <select id="oCustomer" class="bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-[#B7B4AE] focus:border-[#726E68] outline-none transition">
+            <option value="">-- ลูกค้าทั่วไป --</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- กล่อง 2: เพิ่มรายการเมนู -->
+      <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 space-y-4 shadow-lg">
+        <div class="flex items-center gap-2 mb-2">
+          <i class="ph-bold ph-coffee text-[#726E68]"></i>
+          <h3 class="text-white font-medium">รายการเมนู</h3>
+        </div>
+        <select id="oMenu" onchange="autoFillPrice()" class="w-full bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white focus:border-[#726E68] outline-none mb-3 transition">
+          <option value="">-- เลือกเมนู --</option>
+        </select>
+        <div class="grid grid-cols-3 gap-3">
+          <div class="relative">
+             <span class="absolute top-[-10px] left-3 bg-[#1A1A1A] px-1 text-xs text-[#726E68]">จำนวน</span>
+             <input type="number" id="oQty" onkeyup="calcTotal()" class="w-full bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white focus:border-[#726E68] outline-none text-center">
+          </div>
+          <div class="relative">
+             <span class="absolute top-[-10px] left-3 bg-[#1A1A1A] px-1 text-xs text-[#726E68]">ราคา/หน่วย</span>
+             <input type="number" id="oPrice" onkeyup="calcTotal()" class="w-full bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white focus:border-[#726E68] outline-none text-center">
+          </div>
+          <div class="relative">
+             <span class="absolute top-[-10px] left-3 bg-[#1A1A1A] px-1 text-xs text-[#726E68]">รวม</span>
+             <input type="number" id="oTotal" readonly class="w-full bg-[#33312F]/50 border border-[#33312F] rounded-lg p-3 text-green-400 outline-none text-center font-bold">
+          </div>
+        </div>
+        <button onclick="addItem()" class="w-full mt-3 bg-[#33312F] hover:bg-[#4a4744] text-white py-3 rounded-lg font-medium transition duration-300 flex items-center justify-center gap-2">
+          <i class="ph-bold ph-plus-circle text-lg"></i> เพิ่มลงตะกร้า
+        </button>
+      </div>
+
+      <!-- กล่อง 3: ตะกร้าและสรุปยอด -->
+      <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 shadow-lg overflow-hidden">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="border-b border-[#33312F] text-[#726E68] text-sm">
+              <th class="pb-3 font-medium w-1/2">รายการ</th>
+              <th class="pb-3 font-medium text-center">จำนวน</th>
+              <th class="pb-3 font-medium text-right">รวม (฿)</th>
+              <th class="pb-3 font-medium text-center"></th>
+            </tr>
+          </thead>
+          <tbody id="itemTbody" class="text-sm text-white divide-y divide-[#33312F]/50">
+            <!-- ข้อมูลตะกร้าจะมาแสดงตรงนี้ -->
+          </tbody>
+        </table>
+        <div class="mt-4 pt-4 border-t border-[#726E68]/30 flex justify-between items-center text-white">
+          <span class="font-medium text-[#726E68]">ยอดรวมทั้งสิ้น</span>
+          <span class="text-2xl font-bold text-green-400">฿<span id="grandTotal">0.00</span></span>
+        </div>
+      </div>
+
+      <button id="btnSaveOrder" onclick="saveOrder()" class="w-full bg-[#371E1E] hover:bg-[#5a2e2e] text-white py-4 rounded-xl font-bold tracking-wide transition duration-300 flex items-center justify-center gap-2 shadow-lg mt-4">
+        <i class="ph-bold ph-floppy-disk text-xl"></i> บันทึกออเดอร์ลงระบบ
+      </button>
+    </div>
+
+    <!-- ================= แท็บ 2: Print PDF ================= -->
+    <div id="PrintTab" class="tabcontent space-y-4" style="display:none;">
+      <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 space-y-5 shadow-lg">
+        <div class="flex items-center gap-2 mb-2">
+          <i class="ph-bold ph-printer text-[#726E68]"></i>
+          <h3 class="text-white font-medium">สร้างเอกสาร PDF</h3>
+        </div>
+        <div>
+          <label class="text-xs text-[#726E68] ml-1">เลขที่เอกสาร</label>
+          <input type="text" id="pdfDocNo" placeholder="เช่น BA260708-..." class="w-full bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white focus:border-[#726E68] outline-none mt-1">
+        </div>
+        <div>
+          <label class="text-xs text-[#726E68] ml-1">ส่งไปที่อีเมล (ไม่บังคับ)</label>
+          <input type="email" id="pdfEmail" placeholder="email@example.com" class="w-full bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white focus:border-[#726E68] outline-none mt-1">
+        </div>
+        <button id="btnPDF" onclick="runPDF()" class="w-full bg-[#371E1E] hover:bg-[#5a2e2e] text-white py-4 rounded-xl font-bold tracking-wide transition duration-300 flex items-center justify-center gap-2">
+          <i class="ph-bold ph-paper-plane-tilt text-xl"></i> สั่งปริ้น PDF & ส่งเมล
+        </button>
+      </div>
+    </div>
+
+    <!-- ================= แท็บ 3: Customers ================= -->
+    <div id="CustomerTab" class="tabcontent space-y-4" style="display:none;">
+      <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 space-y-4 shadow-lg">
+         <div class="flex items-center gap-2 mb-4">
+          <i class="ph-bold ph-users text-[#726E68]"></i>
+          <h3 class="text-white font-medium">เพิ่มฐานข้อมูลลูกค้า</h3>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <input type="text" id="cId" placeholder="รหัสลูกค้า" class="bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none">
+          <input type="text" id="cName" placeholder="ชื่อลูกค้า/บริษัท" class="bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none">
+          <input type="text" id="cAddress" placeholder="ที่อยู่" class="col-span-2 bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none">
+          <input type="text" id="cTax" placeholder="เลขผู้เสียภาษี" class="bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none">
+          <input type="text" id="cType" placeholder="ประเภท" class="bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none">
+          <input type="email" id="cEmail" placeholder="Emil" class="col-span-2 bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none">
+        </div>
+        <button id="btnCustomer" onclick="saveCustomer()" class="w-full bg-[#33312F] hover:bg-[#726E68] text-white py-4 rounded-xl font-bold tracking-wide transition duration-300 flex items-center justify-center gap-2 mt-2">
+          <i class="ph-bold ph-floppy-disk text-xl"></i> บันทึกลูกค้าใหม่
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Javascript -->
+  <script>
+    // 🟢 เปลี่ยน API_URL ตรงนี้ให้เป็นของคุณ 🟢
+    const API_URL = "https://script.google.com/macros/s/AKfycbz54LD3gkCX0Yz1GU6m0hoyrscvsDvT4giNBwTrr64tUlcjsEKzz_bk2iFYP-VYdSTf/exec"; 
+    
+    let menuDataList = [];
+    let currentItems = [];
+
+    // ฟังก์ชันจัดการ Loading Screen ใบไม้
+    function setLoading(isActive, text = "SYNCING DATA...") {
+        const loader = document.getElementById('loading');
+        loader.style.display = isActive ? 'flex' : 'none';
+        document.getElementById('loading-text').innerText = text;
+    }
+
+    function openTab(evt, tabName) {
+      document.querySelectorAll(".tabcontent").forEach(el => el.style.display = "none");
+      document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
+      document.getElementById(tabName).style.display = "block";
+      evt.currentTarget.classList.add("active");
+    }
+
+    function autoGenerateBillAndDate() {
+      let now = new Date();
+      let yy = now.getFullYear().toString().slice(-2);
+      let mm = String(now.getMonth() + 1).padStart(2, '0');
+      let dd = String(now.getDate()).padStart(2, '0');
+      let hh = String(now.getHours()).padStart(2, '0');
+      let min = String(now.getMinutes()).padStart(2, '0');
+      let sec = String(now.getSeconds()).padStart(2, '0');
+      
+      document.getElementById("oDoc").value = `BA${yy}${mm}${dd}-${hh}${min}${sec}`;
+      document.getElementById("oDate").value = `${now.getFullYear()}-${mm}-${dd}`;
+    }
+
+    window.onload = function() {
+      autoGenerateBillAndDate();
+      setLoading(true, "FETCHING DATA...");
+
+      fetch(API_URL + "?action=getDropdowns")
+      .then(res => res.json())
+      .then(data => {
+        let custSelect = document.getElementById("oCustomer");
+        data.customers.forEach(c => custSelect.innerHTML += `<option value="${c}">${c}</option>`);
+
+        let menuSelect = document.getElementById("oMenu");
+        menuDataList = data.menus;
+        data.menus.forEach(m => menuSelect.innerHTML += `<option value="${m.name}">${m.name}</option>`);
+      })
+      .catch(err => console.log("Error loading data", err))
+      .finally(() => setLoading(false));
+    };
+
+    function autoFillPrice() {
+      let selected = document.getElementById("oMenu").value;
+      let menuObj = menuDataList.find(m => m.name === selected);
+      if(menuObj) {
+        document.getElementById("oPrice").value = menuObj.price;
+        calcTotal();
+      }
+    }
+
+    function calcTotal() {
+      let p = document.getElementById("oPrice").value;
+      let q = document.getElementById("oQty").value;
+      if(p && q) document.getElementById("oTotal").value = parseFloat(p) * parseFloat(q);
+    }
+
+    function addItem() {
+      let menu = document.getElementById("oMenu").value;
+      let qty = document.getElementById("oQty").value;
+      let price = document.getElementById("oPrice").value;
+      let total = document.getElementById("oTotal").value;
+      if(!menu || !qty) return alert("กรุณาเลือกเมนูและใส่จำนวนครับ");
+
+      currentItems.push({ menu, qty, price, total });
+      renderTable();
+      
+      document.getElementById("oMenu").value = "";
+      document.getElementById("oQty").value = "";
+      document.getElementById("oPrice").value = "";
+      document.getElementById("oTotal").value = "";
+    }
+
+    function renderTable() {
+      let tbody = document.getElementById("itemTbody");
+      tbody.innerHTML = "";
+      let grandTotal = 0;
+      
+      currentItems.forEach((item, index) => {
+        grandTotal += parseFloat(item.total);
+        tbody.innerHTML += `
+          <tr class="hover:bg-[#33312F]/30 transition">
+            <td class="py-3">${item.menu}</td>
+            <td class="py-3 text-center">${item.qty}</td>
+            <td class="py-3 text-right">${item.total}</td>
+            <td class="py-3 text-center">
+              <button onclick="currentItems.splice(${index}, 1); renderTable();" class="text-red-400 hover:text-red-500 transition">
+                <i class="ph-bold ph-trash text-lg"></i>
+              </button>
+            </td>
+          </tr>`;
+      });
+      document.getElementById("grandTotal").innerText = grandTotal.toFixed(2);
+    }
+
+    function sendToAPI(payload, loadingText, callback) {
+      setLoading(true, loadingText);
+      fetch(API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.text())
+      .then(text => {
+        alert(text);
+        if(callback) callback();
+      }).catch(err => {
+        alert("เกิดข้อผิดพลาด: " + err);
+      }).finally(() => setLoading(false));
+    }
+
+    function saveOrder() {
+      let payload = {
+        action: "saveOrder",
+        doc: document.getElementById("oDoc").value, 
+        date: document.getElementById("oDate").value,
+        customer: document.getElementById("oCustomer").value, 
+        items: currentItems
+      };
+      
+      if(!payload.doc || currentItems.length === 0) return alert("ระบุเลขที่เอกสารและเพิ่มเมนูอย่างน้อย 1 รายการครับ");
+      
+      sendToAPI(payload, "SAVING ORDER...", () => {
+        currentItems = []; 
+        renderTable(); 
+        autoGenerateBillAndDate();
+        document.getElementById("oCustomer").value = ""; 
+      });
+    }
+
+    function runPDF() {
+      let payload = { action: "runPDF", docNo: document.getElementById("pdfDocNo").value, email: document.getElementById("pdfEmail").value };
+      if(!payload.docNo) return alert("กรุณาระบุเลขที่เอกสารครับ");
+      sendToAPI(payload, "GENERATING PDF...");
+    }
+
+    function saveCustomer() {
+      let payload = {
+        action: "saveCustomer", cid: document.getElementById("cId").value, cname: document.getElementById("cName").value,
+        caddress: document.getElementById("cAddress").value, ctax: document.getElementById("cTax").value,
+        ctype: document.getElementById("cType").value, cemail: document.getElementById("cEmail").value, cphone: document.getElementById("cPhone").value
+      };
+      sendToAPI(payload, "SAVING CUSTOMER...");
+    }
+  </script>
+</body>
+</html>
