@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Balenrista - Order System</title>
-  <!-- นำเข้า Tailwind CSS และ Phosphor Icons ให้ตรงกับธีมเดิม -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -30,7 +29,6 @@
 </head>
 <body class="p-4 md:p-6 pb-12">
 
-  <!-- Loading Screen (ซ่อนไว้ เริ่มทำงานเมื่อมีการบันทึก/โหลด) -->
   <div id="loading" class="fixed inset-0 bg-[#0A0A0A]/90 z-[999] flex flex-col items-center justify-center backdrop-blur-sm" style="display: none;">
     <div class="loader">
       <div class="leaf"></div><div class="leaf"></div><div class="leaf"></div>
@@ -40,14 +38,12 @@
 
   <div class="max-w-xl mx-auto space-y-6">
     
-    <!-- ส่วนหัว Header -->
     <div class="flex items-center justify-center mb-6 mt-4">
       <h1 class="text-2xl font-bold text-white tracking-widest flex items-center gap-2">
         <i class="ph-fill ph-coffee text-[#726E68]"></i> BALENRISTA
       </h1>
     </div>
 
-    <!-- เมนู Tabs สไตล์ Segmented Control แบบพรีเมียม -->
     <div class="flex space-x-2 bg-[#1A1A1A] p-1.5 rounded-xl border border-[#33312F]">
       <button class="tab-btn active flex-1 py-3 rounded-lg text-sm font-medium text-[#726E68] flex flex-col items-center gap-1" onclick="openTab(event, 'OrderTab')">
         <i class="ph-bold ph-receipt text-xl"></i> รับออเดอร์
@@ -60,10 +56,8 @@
       </button>
     </div>
 
-    <!-- ================= แท็บ 1: รับออเดอร์ (Orders) ================= -->
     <div id="OrderTab" class="tabcontent space-y-4" style="display:block;">
       
-      <!-- กล่อง 1: ข้อมูลบิลหลัก -->
       <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 space-y-4 shadow-lg">
         <div class="flex items-center gap-2 mb-2">
           <i class="ph-bold ph-file-text text-[#726E68]"></i>
@@ -78,7 +72,6 @@
         </div>
       </div>
 
-      <!-- กล่อง 2: เพิ่มรายการเมนู -->
       <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 space-y-4 shadow-lg">
         <div class="flex items-center gap-2 mb-2">
           <i class="ph-bold ph-coffee text-[#726E68]"></i>
@@ -106,7 +99,6 @@
         </button>
       </div>
 
-      <!-- กล่อง 3: ตะกร้าและสรุปยอด -->
       <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 shadow-lg overflow-hidden">
         <table class="w-full text-left border-collapse">
           <thead>
@@ -118,8 +110,7 @@
             </tr>
           </thead>
           <tbody id="itemTbody" class="text-sm text-white divide-y divide-[#33312F]/50">
-            <!-- ข้อมูลตะกร้าจะมาแสดงตรงนี้ -->
-          </tbody>
+            </tbody>
         </table>
         <div class="mt-4 pt-4 border-t border-[#726E68]/30 flex justify-between items-center text-white">
           <span class="font-medium text-[#726E68]">ยอดรวมทั้งสิ้น</span>
@@ -132,8 +123,7 @@
       </button>
     </div>
 
-    <!-- ================= แท็บ 2: Print PDF ================= -->
-        <div id="PrintTab" class="tabcontent space-y-4" style="display:none;">
+    <div id="PrintTab" class="tabcontent space-y-4" style="display:none;">
       <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 space-y-5 shadow-lg">
         
         <div class="flex items-center gap-2 mb-2">
@@ -159,13 +149,10 @@
             <i class="ph-bold ph-arrows-clockwise"></i> อัปเดต
           </button>
         </div>
-        <div id="orderList" class="mt-2 space-y-2 max-h-60 overflow-y-auto custom-scrollbar pr-1">
-          </div>
-
+        <div id="orderList" class="mt-2 space-y-2 max-h-60 overflow-y-auto custom-scrollbar pr-1"></div>
       </div>
     </div>
 
-    <!-- ================= แท็บ 3: Customers ================= -->
     <div id="CustomerTab" class="tabcontent space-y-4" style="display:none;">
       <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 space-y-4 shadow-lg">
          <div class="flex items-center gap-2 mb-4">
@@ -173,27 +160,24 @@
           <h3 class="text-white font-medium">เพิ่มฐานข้อมูลลูกค้า</h3>
         </div>
         <div class="grid grid-cols-2 gap-3">
-  <input type="text" id="cId" placeholder="รหัสลูกค้า" class="bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none focus:border-[#726E68] transition">
-  <input type="text" id="cName" placeholder="ชื่อลูกค้า/บริษัท" class="bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none focus:border-[#726E68] transition">
-  <input type="text" id="cAddress" placeholder="ที่อยู่" class="col-span-2 bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none focus:border-[#726E68] transition">
-  <input type="text" id="cTax" placeholder="เลขผู้เสียภาษี" class="bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none focus:border-[#726E68] transition">
-  
-  <!-- เปลี่ยนช่องประเภท (cType) เป็นปุ่มกดเลือกสไตล์ Segmented Control -->
-  <div class="flex bg-[#0A0A0A] p-1 rounded-lg border border-[#33312F] w-full items-center">
-    <button type="button" id="btnTypePerson" onclick="setCustomerType('นามบุคคล')" class="flex-1 py-2.5 rounded-md text-xs font-medium bg-[#33312F] text-white border border-[#726E68] transition duration-300">
-      นามบุคคล
-    </button>
-    <button type="button" id="btnTypeCompany" onclick="setCustomerType('นามบริษัท')" class="flex-1 py-2.5 rounded-md text-xs font-medium text-[#726E68] transition duration-300">
-      นามบริษัท
-    </button>
-  </div>
-  <!-- ตัวซ่อนเก็บค่าเพื่อส่งไปหลังบ้าน (ไม่ต้องกดลบออกนะครับ) -->
-  <input type="hidden" id="cType" value="นามบุคคล">
+          <input type="text" id="cId" placeholder="รหัสลูกค้า" class="bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none focus:border-[#726E68] transition">
+          <input type="text" id="cName" placeholder="ชื่อลูกค้า/บริษัท" class="bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none focus:border-[#726E68] transition">
+          <input type="text" id="cAddress" placeholder="ที่อยู่" class="col-span-2 bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none focus:border-[#726E68] transition">
+          <input type="text" id="cTax" placeholder="เลขผู้เสียภาษี" class="bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none focus:border-[#726E68] transition">
+          
+          <div class="flex bg-[#0A0A0A] p-1 rounded-lg border border-[#33312F] w-full items-center">
+            <button type="button" id="btnTypePerson" onclick="setCustomerType('นามบุคคล')" class="flex-1 py-2.5 rounded-md text-xs font-medium bg-[#33312F] text-white border border-[#726E68] transition duration-300">
+              นามบุคคล
+            </button>
+            <button type="button" id="btnTypeCompany" onclick="setCustomerType('นามบริษัท')" class="flex-1 py-2.5 rounded-md text-xs font-medium text-[#726E68] transition duration-300">
+              นามบริษัท
+            </button>
+          </div>
+          <input type="hidden" id="cType" value="นามบุคคล">
 
-  <input type="email" id="cEmail" placeholder="Email" class="bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none focus:border-[#726E68] transition">
-  <input type="tel" id="cPhone" placeholder="เบอร์โทรศัพท์" class="bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none focus:border-[#726E68] transition">
-</div>
-
+          <input type="email" id="cEmail" placeholder="Email" class="bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none focus:border-[#726E68] transition">
+          <input type="tel" id="cPhone" placeholder="เบอร์โทรศัพท์" class="bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none focus:border-[#726E68] transition">
+        </div>
 
         <button id="btnCustomer" onclick="saveCustomer()" class="w-full bg-[#33312F] hover:bg-[#726E68] text-white py-4 rounded-xl font-bold tracking-wide transition duration-300 flex items-center justify-center gap-2 mt-2">
           <i class="ph-bold ph-floppy-disk text-xl"></i> บันทึกลูกค้าใหม่
@@ -203,33 +187,31 @@
 
   </div>
 
-  <!-- Javascript -->
   <script>
-    // 🟢 เปลี่ยน API_URL ตรงนี้ให้เป็นของคุณ 🟢
     const API_URL = "https://script.google.com/macros/s/AKfycbzRKZ7oPg9qPofpaHZH60w1P9JvKDWM0ceWvpWiwQCHDkSG7_T8RYYO_0oPH342-8xZ/exec"; 
     
     let menuDataList = [];
     let currentItems = [];
 
-    // ฟังก์ชันจัดการ Loading Screen ใบไม้
-    function openTab(evt, tabName) {
-  document.querySelectorAll(".tabcontent").forEach(el => el.style.display = "none");
-  document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
-  document.getElementById(tabName).style.display = "block";
-  evt.currentTarget.classList.add("active");
-  
-  // 🔥 ดักจับถ้าสลับมาที่แท็บ PrintTab ให้สั่งโหลดรายการออเดอร์อัตโนมัติทันที
-  if (tabName === 'PrintTab') {
-    loadOrderList();
-  }
-}
+    // ฟังก์ชันจัดการหน้า Loading Screen (เปิด/ปิด ใบไม้หมุน)
+    function setLoading(show, text = "LOADING...") {
+      const loadingScreen = document.getElementById("loading");
+      const loadingText = document.getElementById("loading-text");
+      if (loadingScreen) loadingScreen.style.display = show ? "flex" : "none";
+      if (loadingText) loadingText.innerText = text;
+    }
 
-
+    // ฟังก์ชันสลับแท็บเมนู (แก้บั๊กตัวเขียนทับ และฝัง Auto-Refresh)
     function openTab(evt, tabName) {
       document.querySelectorAll(".tabcontent").forEach(el => el.style.display = "none");
       document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
       document.getElementById(tabName).style.display = "block";
       evt.currentTarget.classList.add("active");
+      
+      // ดักจับถ้าสลับมาที่แท็บ PrintTab ให้สั่งโหลดรายการออเดอร์อัตโนมัติทันที
+      if (tabName === 'PrintTab') {
+        loadOrderList();
+      }
     }
 
     function autoGenerateBillAndDate() {
@@ -352,37 +334,47 @@
     }
 
     function runPDF() {
-  let payload = { action: "runPDF", docNo: document.getElementById("pdfDocNo").value, email: document.getElementById("pdfEmail").value };
-  if(!payload.docNo) return alert("กรุณาระบุเลขที่เอกสารครับ");
-  
-  // 🔥 ใส่ Callback (วงเล็บด้านหลัง) เพื่อสั่งให้รีเฟรชรายการออเดอร์อัตโนมัติหลังจากหลังบ้านทำงานเสร็จ
-  sendToAPI(payload, "GENERATING PDF...", () => {
-    loadOrderList(); 
-  });
-}
+      let payload = { action: "runPDF", docNo: document.getElementById("pdfDocNo").value, email: document.getElementById("pdfEmail").value };
+      if(!payload.docNo) return alert("กรุณาระบุเลขที่เอกสารครับ");
+      
+      sendToAPI(payload, "GENERATING PDF...", () => {
+        loadOrderList(); 
+        document.getElementById("pdfDocNo").value = "";
+        document.getElementById("pdfEmail").value = "";
+      });
+    }
 
-
+    // เพิ่มการล้างค่าข้อมูลลูกค้าหลังจากกดบันทึกสำเร็จ
     function saveCustomer() {
       let payload = {
         action: "saveCustomer", cid: document.getElementById("cId").value, cname: document.getElementById("cName").value,
         caddress: document.getElementById("cAddress").value, ctax: document.getElementById("cTax").value,
         ctype: document.getElementById("cType").value, cemail: document.getElementById("cEmail").value, cphone: document.getElementById("cPhone").value
       };
-      sendToAPI(payload, "SAVING CUSTOMER...");
+      
+      if(!payload.cname) return alert("กรุณาระบุชื่อลูกค้าหรือชื่อบริษัทด้วยครับ");
+
+      sendToAPI(payload, "SAVING CUSTOMER...", () => {
+        document.getElementById("cId").value = "";
+        document.getElementById("cName").value = "";
+        document.getElementById("cAddress").value = "";
+        document.getElementById("cTax").value = "";
+        document.getElementById("cEmail").value = "";
+        document.getElementById("cPhone").value = "";
+        setCustomerType('นามบุคคล'); // รีเซ็ตปุ่มกลับมาที่นามบุคคล
+      });
     }
-    // 🟢 เอาโค้ดมาวางแทรกตรงนี้เลยครับ! ก่อนปิด
+
     function loadOrderList() {
       setLoading(true, "LOADING ORDERS...");
       
       fetch(API_URL + "?action=getOrders") 
       .then(res => res.json())
       .then(data => {
-        // เรียงลำดับเอาอันที่ยังไม่ได้ปริ้นขึ้นก่อน
         data.sort((a, b) => {
           if (a.printed !== b.printed) {
             return a.printed ? 1 : -1; 
           }
-          // ถ้าอยากให้บิลล่าสุดขึ้นก่อนด้วย ให้เพิ่มบรรทัดนี้ครับ:
           return b.doc.localeCompare(a.doc); 
         });
 
@@ -407,24 +399,20 @@
       .catch(err => alert("Error: ไม่สามารถดึงข้อมูลได้ โปรดตรวจสอบ Code.gs ฝั่งหลังบ้าน"))
       .finally(() => setLoading(false));
     }
-    function setCustomerType(type) {
-  // นำค่าไปใส่ใน Input Hidden เพื่อให้ฟังก์ชัน saveCustomer ดึงไปใช้ต่อได้ทันที
-  document.getElementById("cType").value = type;
-  
-  const btnPerson = document.getElementById("btnTypePerson");
-  const btnCompany = document.getElementById("btnTypeCompany");
-  
-  if (type === 'นามบุคคล') {
-    // ไฮไลท์ปุ่มนามบุคคล และปิดไฮไลท์ปุ่มนามบริษัท
-    btnPerson.className = "flex-1 py-2.5 rounded-md text-xs font-medium bg-[#33312F] text-white border border-[#726E68] transition duration-300";
-    btnCompany.className = "flex-1 py-2.5 rounded-md text-xs font-medium text-[#726E68] transition duration-300";
-  } else {
-    // ไฮไลท์ปุ่มนามบริษัท และปิดไฮไลท์ปุ่มนามบุคคล
-    btnPerson.className = "flex-1 py-2.5 rounded-md text-xs font-medium text-[#726E68] transition duration-300";
-    btnCompany.className = "flex-1 py-2.5 rounded-md text-xs font-medium bg-[#33312F] text-white border border-[#726E68] transition duration-300";
-  }
-}
 
+    function setCustomerType(type) {
+      document.getElementById("cType").value = type;
+      const btnPerson = document.getElementById("btnTypePerson");
+      const btnCompany = document.getElementById("btnTypeCompany");
+      
+      if (type === 'นามบุคคล') {
+        btnPerson.className = "flex-1 py-2.5 rounded-md text-xs font-medium bg-[#33312F] text-white border border-[#726E68] transition duration-300";
+        btnCompany.className = "flex-1 py-2.5 rounded-md text-xs font-medium text-[#726E68] transition duration-300";
+      } else {
+        btnPerson.className = "flex-1 py-2.5 rounded-md text-xs font-medium text-[#726E68] transition duration-300";
+        btnCompany.className = "flex-1 py-2.5 rounded-md text-xs font-medium bg-[#33312F] text-white border border-[#726E68] transition duration-300";
+      }
+    }
   </script>
 </body>
 </html>
