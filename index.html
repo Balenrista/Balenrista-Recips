@@ -344,7 +344,7 @@
       sendToAPI(payload, "SAVING CUSTOMER...");
     }
     // 🟢 เอาโค้ดมาวางแทรกตรงนี้เลยครับ! ก่อนปิด
-    function loadOrderList() {
+        function loadOrderList() {
       setLoading(true, "LOADING ORDERS...");
       
       fetch(API_URL + "?action=getOrders") 
@@ -355,7 +355,6 @@
           if (a.printed !== b.printed) {
             return a.printed ? 1 : -1; 
           }
-          // ถ้าอยากให้บิลล่าสุดขึ้นก่อนด้วย ให้เพิ่มบรรทัดนี้ครับ:
           return b.doc.localeCompare(a.doc); 
         });
 
@@ -366,20 +365,30 @@
         }
 
         listDiv.innerHTML = data.map(o => `
-          <div class="flex justify-between items-center p-3 bg-[#0A0A0A] rounded-lg border ${o.printed ? 'border-green-900/30' : 'border-red-900/50'} cursor-pointer hover:bg-[#1A1A1A] transition" onclick="document.getElementById('pdfDocNo').value='${o.doc}'">
-            <div>
-              <div class="text-white font-bold text-sm">${o.doc}</div>
-              <div class="text-[10px] text-[#726E68]">วันที่: ${o.date || '-'}</div>
+          <div class="group flex items-center justify-between p-4 bg-[#1A1A1A] rounded-xl border border-[#33312F] hover:border-[#726E68] hover:bg-[#252320] cursor-pointer transition-all duration-300" onclick="document.getElementById('pdfDocNo').value='${o.doc}'">
+            <div class="flex items-center gap-3">
+              <div class="w-1.5 h-10 rounded-full ${o.printed ? 'bg-green-600' : 'bg-red-600'}"></div>
+              <div>
+                <div class="text-white font-semibold text-sm tracking-wide">${o.doc}</div>
+                <div class="text-[11px] text-[#726E68] mt-0.5 font-light">วันที่: ${o.date || '-'}</div>
+              </div>
             </div>
-            <span class="${o.printed ? 'text-green-500' : 'text-red-500'} font-medium text-xs bg-[#33312F]/50 px-2 py-1 rounded">
-              ${o.printed ? '✓ ปริ้นแล้ว' : '⌛ รอปริ้น'}
-            </span>
+            
+            <div class="text-right">
+              <span class="${o.printed ? 'text-green-500' : 'text-red-500'} flex items-center gap-1.5 font-medium text-xs bg-[#0A0A0A] px-3 py-1.5 rounded-full">
+                ${o.printed ? '<i class="ph-fill ph-check-circle"></i> ปริ้นแล้ว' : '<i class="ph-fill ph-clock"></i> รอปริ้น'}
+              </span>
+            </div>
           </div>
         `).join('');
       })
-      .catch(err => alert("Error: ไม่สามารถดึงข้อมูลได้ โปรดตรวจสอบ Code.gs ฝั่งหลังบ้าน"))
+      .catch(err => {
+        console.error(err);
+        alert("ไม่สามารถดึงข้อมูลได้");
+      })
       .finally(() => setLoading(false));
     }
+
   </script>
 </body>
 </html>
