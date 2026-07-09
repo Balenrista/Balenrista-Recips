@@ -357,8 +357,7 @@
       };
       sendToAPI(payload, "SAVING CUSTOMER...");
     }
-    // 🟢 เอาโค้ดมาวางแทรกตรงนี้เลยครับ! ก่อนปิด
-                // ----------------------------------------------------
+        // ----------------------------------------------------
     // 🟢 ฟังก์ชันโหลดรายการบิล และ ระบบคลิก (Control Panel)
     // ----------------------------------------------------
     let globalOrders = []; // ตัวแปรเก็บข้อมูลบิลไว้ใช้ตอนคลิก
@@ -392,7 +391,7 @@
               <div class="flex flex-col gap-1.5">
                 <div class="text-white font-bold text-[14px] tracking-wide">${o.doc}</div>
                 <div class="text-[12px] text-[#D95F29] flex items-center gap-1 font-medium">
-                  <i class="ph-bold ph-pencil-simple"></i> Printing (วันที่: ${o.date || '-'})
+                  <i class="ph-bold ph-pencil-simple"></i> รอปริ้น (วันที่: ${o.date || '-'})
                 </div>
               </div>
               <div>
@@ -408,7 +407,7 @@
               <div class="flex flex-col gap-1.5">
                 <div class="text-[#726E68] font-bold text-[14px] tracking-wide">${o.doc}</div>
                 <div class="text-[12px] text-[#726E68] flex items-center gap-1">
-                  <i class="ph-bold ph-check-circle"></i> Print (วันที่: ${o.date || '-'})
+                  <i class="ph-bold ph-check-circle"></i> ปริ้นแล้ว (วันที่: ${o.date || '-'})
                 </div>
               </div>
               <div>
@@ -445,7 +444,7 @@
         actionDiv.innerHTML = `
           <div class="space-y-3">
             <button class="w-full bg-[#1A1A1A] hover:bg-[#222222] text-[#D95F29] py-3 rounded-xl text-[13px] font-bold tracking-wide flex items-center justify-center gap-2 border border-[#33312F] transition-all">
-              <i class="ph-fill ph-file-pdf text-lg"></i> Open PDF
+              <i class="ph-fill ph-file-pdf text-lg"></i> คลิกเปิดเอกสาร PDF
             </button>
             <button onclick="runPDF()" class="w-full bg-[#D95F29] hover:bg-[#c25323] text-white py-3 rounded-xl text-[13px] font-bold tracking-wide flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#D95F29]/20">
               <i class="ph-bold ph-arrows-clockwise text-lg"></i> ออกเอกสาร PDF ใหม่อีกครั้ง
@@ -472,7 +471,6 @@
         `;
       }
     }
-
   </script>
 </body>
 </html>
