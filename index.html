@@ -133,33 +133,41 @@
     </div>
 
     <!-- ================= แท็บ 2: Print PDF ================= -->
-        <div id="PrintTab" class="tabcontent space-y-4" style="display:none;">
+            <div id="PrintTab" class="tabcontent space-y-4" style="display:none;">
       <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 space-y-5 shadow-lg">
         
         <div class="flex items-center gap-2 mb-2">
           <i class="ph-bold ph-printer text-[#726E68]"></i>
           <h3 class="text-white font-medium">สร้างเอกสาร PDF</h3>
         </div>
-        <div>
-          <label class="text-xs text-[#726E68] ml-1">เลขที่เอกสาร</label>
-          <input type="text" id="pdfDocNo" placeholder="เช่น BA260708-..." class="w-full bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white focus:border-[#726E68] outline-none mt-1">
+        
+        <div class="space-y-4 bg-[#0A0A0A] p-4 rounded-xl border border-[#33312F]">
+          <div>
+            <label class="text-xs text-[#726E68] ml-1 mb-1 block">เลขที่เอกสาร</label>
+            <input type="text" id="pdfDocNo" placeholder="เช่น BA260708-..." class="w-full bg-[#1A1A1A] border border-[#33312F] rounded-lg p-3 text-[#B7B4AE] focus:border-[#726E68] outline-none transition-all">
+          </div>
+          <div>
+            <label class="text-xs text-[#726E68] ml-1 mb-1 block">ส่งไปที่อีเมล (ไม่บังคับ)</label>
+            <input type="email" id="pdfEmail" placeholder="email@example.com" class="w-full bg-[#1A1A1A] border border-[#33312F] rounded-lg p-3 text-[#B7B4AE] focus:border-[#726E68] outline-none transition-all">
+          </div>
+          
+          <button id="btnPDF" onclick="runPDF()" class="w-full bg-[#371E1E] hover:bg-[#5a2e2e] text-white py-4 rounded-xl font-bold tracking-wide transition duration-300 flex items-center justify-center gap-2 shadow-lg mt-2">
+            <i class="ph-bold ph-paper-plane-tilt text-xl"></i> สั่งปริ้น PDF & ส่งเมล
+          </button>
         </div>
-        <div>
-          <label class="text-xs text-[#726E68] ml-1">ส่งไปที่อีเมล (ไม่บังคับ)</label>
-          <input type="email" id="pdfEmail" placeholder="email@example.com" class="w-full bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white focus:border-[#726E68] outline-none mt-1">
-        </div>
-        <button id="btnPDF" onclick="runPDF()" class="w-full bg-[#371E1E] hover:bg-[#5a2e2e] text-white py-4 rounded-xl font-bold tracking-wide transition duration-300 flex items-center justify-center gap-2">
-          <i class="ph-bold ph-paper-plane-tilt text-xl"></i> สั่งปริ้น PDF & ส่งเมล
-        </button>
 
         <hr class="border-[#33312F] my-4">
-        <div class="flex items-center justify-between mt-4">
-          <h3 class="text-white font-medium text-sm">รายการเอกสาร</h3>
+        
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <h3 class="text-white font-medium text-sm">รายการเอกสาร</h3>
+          </div>
           <button onclick="loadOrderList()" class="bg-[#33312F] hover:bg-[#726E68] text-white px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1">
             <i class="ph-bold ph-arrows-clockwise"></i> อัปเดต
           </button>
         </div>
-        <div id="orderList" class="mt-2 space-y-2 max-h-60 overflow-y-auto custom-scrollbar pr-1">
+        
+        <div id="orderList" class="mt-2 space-y-2 max-h-[350px] overflow-y-auto custom-scrollbar pr-1">
           </div>
 
       </div>
@@ -344,43 +352,59 @@
       sendToAPI(payload, "SAVING CUSTOMER...");
     }
     // 🟢 เอาโค้ดมาวางแทรกตรงนี้เลยครับ! ก่อนปิด
-        function loadOrderList() {
+            function loadOrderList() {
       setLoading(true, "LOADING ORDERS...");
-      
-      fetch(API_URL + "?action=getOrders") 
+
+      fetch(API_URL + "?action=getOrders")
       .then(res => res.json())
       .then(data => {
-        // เรียงลำดับเอาอันที่ยังไม่ได้ปริ้นขึ้นก่อน
         data.sort((a, b) => {
-          if (a.printed !== b.printed) {
-            return a.printed ? 1 : -1; 
-          }
-          return b.doc.localeCompare(a.doc); 
+          if (a.printed !== b.printed) return a.printed ? 1 : -1;
+          return b.doc.localeCompare(a.doc);
         });
 
         let listDiv = document.getElementById("orderList");
         if(data.length === 0) {
-           listDiv.innerHTML = `<div class="text-center text-[#726E68] text-xs py-4">ไม่มีข้อมูลรายการ</div>`;
+           listDiv.innerHTML = `<div class="text-center text-[#726E68] text-sm py-4">ไม่มีข้อมูลรายการ</div>`;
            return;
         }
 
-        listDiv.innerHTML = data.map(o => `
-          <div class="group flex items-center justify-between p-4 bg-[#1A1A1A] rounded-xl border border-[#33312F] hover:border-[#726E68] hover:bg-[#252320] cursor-pointer transition-all duration-300" onclick="document.getElementById('pdfDocNo').value='${o.doc}'">
-            <div class="flex items-center gap-3">
-              <div class="w-1.5 h-10 rounded-full ${o.printed ? 'bg-green-600' : 'bg-red-600'}"></div>
-              <div>
-                <div class="text-white font-semibold text-sm tracking-wide">${o.doc}</div>
-                <div class="text-[11px] text-[#726E68] mt-0.5 font-light">วันที่: ${o.date || '-'}</div>
+        // สร้างการ์ดให้กลมกลืนกับธีม Balenrista
+        listDiv.innerHTML = data.map(o => {
+          if (!o.printed) {
+            // 🔴 สถานะ: ยังไม่ปริ้น (ใช้ขอบและปุ่มสีเทาสว่าง / Hover เปลี่ยนเป็นสีน้ำตาล)
+            return `
+            <div class="flex items-center justify-between p-4 bg-[#0A0A0A] rounded-xl border border-[#726E68]/50 hover:border-[#726E68] cursor-pointer transition-all mb-2" onclick="document.getElementById('pdfDocNo').value='${o.doc}'">
+              <div class="flex flex-col gap-1.5">
+                <div class="text-[#B7B4AE] font-medium text-[15px] tracking-wide">${o.doc}</div>
+                <div class="text-[12px] text-[#726E68] flex items-center gap-1.5 font-medium">
+                  <i class="ph-bold ph-pencil-simple text-sm"></i> รอปริ้น (วันที่: ${o.date || '-'})
+                </div>
               </div>
-            </div>
-            
-            <div class="text-right">
-              <span class="${o.printed ? 'text-green-500' : 'text-red-500'} flex items-center gap-1.5 font-medium text-xs bg-[#0A0A0A] px-3 py-1.5 rounded-full">
-                ${o.printed ? '<i class="ph-fill ph-check-circle"></i> ปริ้นแล้ว' : '<i class="ph-fill ph-clock"></i> รอปริ้น'}
-              </span>
-            </div>
-          </div>
-        `).join('');
+              <div>
+                <button class="px-4 py-1.5 rounded-lg border border-[#726E68] text-[#B7B4AE] text-xs font-semibold tracking-wider hover:bg-[#371E1E] hover:border-[#371E1E] hover:text-white transition-colors">
+                  Print
+                </button>
+              </div>
+            </div>`;
+          } else {
+            // 🟢 สถานะ: ปริ้นแล้ว (ดรอปสีลงให้ดูจางแบบเรียบหรู)
+            return `
+            <div class="flex items-center justify-between p-4 bg-[#0A0A0A] rounded-xl border border-[#33312F] opacity-60 hover:opacity-100 cursor-pointer transition-all mb-2" onclick="document.getElementById('pdfDocNo').value='${o.doc}'">
+              <div class="flex flex-col gap-1.5">
+                <div class="text-[#726E68] font-medium text-[15px] tracking-wide">${o.doc}</div>
+                <div class="text-[12px] text-[#33312F] flex items-center gap-1.5">
+                  <i class="ph-bold ph-check-circle text-sm"></i> ปริ้นเรียบร้อย
+                </div>
+              </div>
+              <div>
+                <button class="px-4 py-1.5 rounded-lg border border-[#33312F] text-[#726E68] text-xs font-medium tracking-wider bg-[#1A1A1A]">
+                  Done
+                </button>
+              </div>
+            </div>`;
+          }
+        }).join('');
       })
       .catch(err => {
         console.error(err);
