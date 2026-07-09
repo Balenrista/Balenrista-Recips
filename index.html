@@ -219,7 +219,7 @@
   <!-- Javascript -->
   <script>
     // 🟢 เปลี่ยน API_URL ตรงนี้ให้เป็นของคุณ 🟢
-    const API_URL = "https://script.google.com/macros/s/AKfycbyVArr3eiNrcojYZU0QrwMsrLALIRS5NXV4PRx2yEywv-GUwAUPPvrrOnUL9SWAcwHa/exec"; 
+    const API_URL = "https://script.google.com/macros/s/AKfycbw51YRgGlyiWtilnXnrVUeiX0iKEPTaH_QQq-r7EMkSzVHibsk5vV0ckU1eNk5hw42Z/exec"; 
     
     let menuDataList = [];
     let currentItems = [];
@@ -458,17 +458,15 @@
       document.getElementById('panelDate').innerText = order.date || "-";
       document.getElementById('panelNote').innerText = order.note || "ไม่มีหมายเหตุ";
 
-      let actionDiv = document.getElementById('panelActions');
-
-            if(order.printed) {
+      let actionDiv = document.getElementById('      if(order.printed) {
         // [ถ้าปริ้นแล้ว] - โชว์ปุ่มเปิดเอกสาร / ส่งเมล / สั่งใหม่
         actionDiv.innerHTML = `
           <div class="space-y-3">
             <button onclick="if('${order.url}') { window.open('${order.url}', '_blank'); } else { alert('ไม่พบลิงก์ไฟล์ PDF'); }" class="w-full bg-[#1A1A1A] hover:bg-[#222222] text-[#D95F29] py-3 rounded-xl text-[13px] font-bold tracking-wide flex items-center justify-center gap-2 border border-[#33312F] transition-all">
-              <i class="ph-fill ph-file-pdf text-lg"></i> Open PDF
+              <i class="ph-fill ph-file-pdf text-lg"></i> คลิกเปิดเอกสาร PDF
             </button>
             <button onclick="runPDF()" class="w-full bg-[#D95F29] hover:bg-[#c25323] text-white py-3 rounded-xl text-[13px] font-bold tracking-wide flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#D95F29]/20">
-              <i class="ph-bold ph-arrows-clockwise text-lg"></i> Generate PDF Again
+              <i class="ph-bold ph-arrows-clockwise text-lg"></i> ออกเอกสาร PDF ใหม่อีกครั้ง
             </button>
             <div class="flex items-center gap-2 mt-2">
               <input type="email" id="pdfEmail" placeholder="Email address..." class="flex-1 bg-[#1A1A1A] border border-[#33312F] rounded-xl p-3 text-[13px] text-white focus:outline-none focus:border-[#D95F29]">
