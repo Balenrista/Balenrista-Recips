@@ -212,11 +212,18 @@
     let currentItems = [];
 
     // ฟังก์ชันจัดการ Loading Screen ใบไม้
-    function setLoading(isActive, text = "SYNCING DATA...") {
-        const loader = document.getElementById('loading');
-        loader.style.display = isActive ? 'flex' : 'none';
-        document.getElementById('loading-text').innerText = text;
-    }
+    function openTab(evt, tabName) {
+  document.querySelectorAll(".tabcontent").forEach(el => el.style.display = "none");
+  document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
+  document.getElementById(tabName).style.display = "block";
+  evt.currentTarget.classList.add("active");
+  
+  // 🔥 ดักจับถ้าสลับมาที่แท็บ PrintTab ให้สั่งโหลดรายการออเดอร์อัตโนมัติทันที
+  if (tabName === 'PrintTab') {
+    loadOrderList();
+  }
+}
+
 
     function openTab(evt, tabName) {
       document.querySelectorAll(".tabcontent").forEach(el => el.style.display = "none");
@@ -345,10 +352,15 @@
     }
 
     function runPDF() {
-      let payload = { action: "runPDF", docNo: document.getElementById("pdfDocNo").value, email: document.getElementById("pdfEmail").value };
-      if(!payload.docNo) return alert("กรุณาระบุเลขที่เอกสารครับ");
-      sendToAPI(payload, "GENERATING PDF...");
-    }
+  let payload = { action: "runPDF", docNo: document.getElementById("pdfDocNo").value, email: document.getElementById("pdfEmail").value };
+  if(!payload.docNo) return alert("กรุณาระบุเลขที่เอกสารครับ");
+  
+  // 🔥 ใส่ Callback (วงเล็บด้านหลัง) เพื่อสั่งให้รีเฟรชรายการออเดอร์อัตโนมัติหลังจากหลังบ้านทำงานเสร็จ
+  sendToAPI(payload, "GENERATING PDF...", () => {
+    loadOrderList(); 
+  });
+}
+
 
     function saveCustomer() {
       let payload = {
