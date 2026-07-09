@@ -180,7 +180,7 @@
 
 
     <!-- ================= แท็บ 3: Customers ================= -->
-    <div id="CustomerTab" class="tabcontent space-y-4" style="display:none;">
+        <div id="CustomerTab" class="tabcontent space-y-4" style="display:none;">
       <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 space-y-4 shadow-lg">
          <div class="flex items-center gap-2 mb-4">
           <i class="ph-bold ph-users text-[#726E68]"></i>
@@ -191,16 +191,30 @@
           <input type="text" id="cName" placeholder="ชื่อลูกค้า/บริษัท" class="bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none">
           <input type="text" id="cAddress" placeholder="ที่อยู่" class="col-span-2 bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none">
           <input type="text" id="cTax" placeholder="เลขผู้เสียภาษี" class="bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none">
-          <input type="text" id="cType" placeholder="ประเภท" class="bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none">
-          <input type="email" id="cEmail" placeholder="Emil" class="col-span-2 bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none">
+          <input type="text" id="cPhone" placeholder="เบอร์โทรศัพท์" class="bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none">
+          
+          <div class="col-span-2 mt-1">
+            <label class="text-[11px] text-[#726E68] ml-1 mb-1.5 block">ประเภทลูกค้า</label>
+            <div class="flex gap-2">
+              <button type="button" id="btnPersonal" onclick="setCustomerType('นามบุคคล')" 
+                      class="flex-1 py-3 rounded-xl border border-[#B7B4AE] bg-[#33312F] text-[#B7B4AE] font-bold text-[13px] transition-all shadow-md flex justify-center items-center gap-1.5">
+                <i class="ph-bold ph-user text-lg"></i> นามบุคคล
+              </button>
+              <button type="button" id="btnCompany" onclick="setCustomerType('นามบริษัท')" 
+                      class="flex-1 py-3 rounded-xl border border-[#33312F] bg-[#0A0A0A] text-[#726E68] font-medium text-[13px] hover:border-[#726E68] hover:text-[#B7B4AE] transition-all flex justify-center items-center gap-1.5">
+                <i class="ph-bold ph-buildings text-lg"></i> นามบริษัท
+              </button>
+            </div>
+            <input type="hidden" id="cType" value="นามบุคคล">
+          </div>
+
+          <input type="email" id="cEmail" placeholder="Email" class="col-span-2 bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none">
         </div>
         <button id="btnCustomer" onclick="saveCustomer()" class="w-full bg-[#33312F] hover:bg-[#726E68] text-white py-4 rounded-xl font-bold tracking-wide transition duration-300 flex items-center justify-center gap-2 mt-2">
           <i class="ph-bold ph-floppy-disk text-xl"></i> บันทึกลูกค้าใหม่
         </button>
       </div>
     </div>
-
-  </div>
 
   <!-- Javascript -->
   <script>
@@ -349,14 +363,21 @@
       sendToAPI(payload, "GENERATING PDF...");
     }
 
-    function saveCustomer() {
-      let payload = {
-        action: "saveCustomer", cid: document.getElementById("cId").value, cname: document.getElementById("cName").value,
-        caddress: document.getElementById("cAddress").value, ctax: document.getElementById("cTax").value,
-        ctype: document.getElementById("cType").value, cemail: document.getElementById("cEmail").value, cphone: document.getElementById("cPhone").value
-      };
-      sendToAPI(payload, "SAVING CUSTOMER...");
+        // ฟังก์ชันสำหรับสลับปุ่ม นามบุคคล / นามบริษัท
+    function setCustomerType(type) {
+      document.getElementById('cType').value = type;
+      let btnP = document.getElementById('btnPersonal');
+      let btnC = document.getElementById('btnCompany');
+      
+      if(type === 'นามบุคคล') {
+        btnP.className = "flex-1 py-3 rounded-xl border border-[#B7B4AE] bg-[#33312F] text-[#B7B4AE] font-bold text-[13px] transition-all shadow-md flex justify-center items-center gap-1.5";
+        btnC.className = "flex-1 py-3 rounded-xl border border-[#33312F] bg-[#0A0A0A] text-[#726E68] font-medium text-[13px] hover:border-[#726E68] hover:text-[#B7B4AE] transition-all flex justify-center items-center gap-1.5";
+      } else {
+        btnC.className = "flex-1 py-3 rounded-xl border border-[#B7B4AE] bg-[#33312F] text-[#B7B4AE] font-bold text-[13px] transition-all shadow-md flex justify-center items-center gap-1.5";
+        btnP.className = "flex-1 py-3 rounded-xl border border-[#33312F] bg-[#0A0A0A] text-[#726E68] font-medium text-[13px] hover:border-[#726E68] hover:text-[#B7B4AE] transition-all flex justify-center items-center gap-1.5";
+      }
     }
+
         // ----------------------------------------------------
     // 🟢 ฟังก์ชันโหลดรายการบิล และ ระบบคลิก (Control Panel)
     // ----------------------------------------------------
