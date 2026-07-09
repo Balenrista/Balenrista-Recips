@@ -133,54 +133,40 @@
     </div>
 
     <!-- ================= แท็บ 2: Print PDF ================= -->
-                <div id="PrintTab" class="tabcontent" style="display:none;">
-      
-      <div class="flex items-center justify-between mb-4 mt-2">
+        <div id="PrintTab" class="tabcontent space-y-4" style="display:none;">
+      <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 space-y-5 shadow-lg">
+        
+        <div class="flex items-center gap-2 mb-2">
+          <i class="ph-bold ph-printer text-[#726E68]"></i>
+          <h3 class="text-white font-medium">สร้างเอกสาร PDF</h3>
+        </div>
         <div>
-          <h2 class="text-white font-bold text-[17px] tracking-wide">Print PDF Management</h2>
-          <p class="text-[#726E68] text-[11px] mt-0.5">บิลที่ยังไม่ได้พิมพ์ จะถูกดันขึ้นแสดงไว้บนสุด</p>
+          <label class="text-xs text-[#726E68] ml-1">เลขที่เอกสาร</label>
+          <input type="text" id="pdfDocNo" placeholder="เช่น BA260708-..." class="w-full bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white focus:border-[#726E68] outline-none mt-1">
         </div>
-        <button onclick="loadOrderList()" class="bg-[#1A1A1A] p-2 rounded-lg border border-[#33312F] text-[#726E68] hover:text-white transition-colors">
-          <i class="ph-bold ph-arrows-clockwise text-lg"></i>
+        <div>
+          <label class="text-xs text-[#726E68] ml-1">ส่งไปที่อีเมล (ไม่บังคับ)</label>
+          <input type="email" id="pdfEmail" placeholder="email@example.com" class="w-full bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white focus:border-[#726E68] outline-none mt-1">
+        </div>
+        <button id="btnPDF" onclick="runPDF()" class="w-full bg-[#371E1E] hover:bg-[#5a2e2e] text-white py-4 rounded-xl font-bold tracking-wide transition duration-300 flex items-center justify-center gap-2">
+          <i class="ph-bold ph-paper-plane-tilt text-xl"></i> สั่งปริ้น PDF & ส่งเมล
         </button>
-      </div>
 
-      <div id="orderList" class="space-y-2 mb-6 max-h-[300px] overflow-y-auto custom-scrollbar">
+        <hr class="border-[#33312F] my-4">
+        <div class="flex items-center justify-between mt-4">
+          <h3 class="text-white font-medium text-sm">รายการเอกสาร</h3>
+          <button onclick="loadOrderList()" class="bg-[#33312F] hover:bg-[#726E68] text-white px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1">
+            <i class="ph-bold ph-arrows-clockwise"></i> อัปเดต
+          </button>
         </div>
-
-      <div class="bg-[#111111] rounded-2xl border border-[#33312F] p-4 shadow-xl mb-4">
-        <div class="flex items-center gap-2 mb-4">
-          <i class="ph-fill ph-clipboard-text text-[#E8E8E8]"></i>
-          <h3 class="text-[#E8E8E8] font-bold text-[13px] tracking-widest">PDF CONTROL PANEL</h3>
-        </div>
-
-        <div class="space-y-2">
-          <div class="bg-[#1A1A1A] rounded-xl p-3 border border-[#33312F]">
-            <div class="text-[#726E68] text-[10px] mb-0.5">เลขที่เอกสาร</div>
-            <div id="panelDocNo" class="text-white font-bold text-[15px]">-</div>
-            <input type="hidden" id="pdfDocNo" value=""> 
-          </div>
-          <div class="bg-[#1A1A1A] rounded-xl p-3 border border-[#33312F]">
-            <div class="text-[#726E68] text-[10px] mb-0.5">วันที่ของเอกสาร</div>
-            <div id="panelDate" class="text-white font-medium text-[13px]">-</div>
-          </div>
-          <div class="bg-[#1A1A1A] rounded-xl p-3 border border-[#33312F]">
-            <div class="text-[#726E68] text-[10px] mb-0.5">หมายเหตุ (NOTE)</div>
-            <div id="panelNote" class="text-[#D95F29] font-medium text-[13px]">-</div>
+        <div id="orderList" class="mt-2 space-y-2 max-h-60 overflow-y-auto custom-scrollbar pr-1">
           </div>
 
-          <div id="panelActions" class="pt-3">
-            <div class="text-center text-[#726E68] text-[12px] py-5 bg-[#1A1A1A] rounded-xl border border-[#33312F]">
-              คลิกเลือกรายการบิลด้านบน เพื่อจัดการ PDF
-            </div>
-          </div>
-        </div>
       </div>
     </div>
 
-
     <!-- ================= แท็บ 3: Customers ================= -->
-        <div id="CustomerTab" class="tabcontent space-y-4" style="display:none;">
+    <div id="CustomerTab" class="tabcontent space-y-4" style="display:none;">
       <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 space-y-4 shadow-lg">
          <div class="flex items-center gap-2 mb-4">
           <i class="ph-bold ph-users text-[#726E68]"></i>
@@ -191,24 +177,8 @@
           <input type="text" id="cName" placeholder="ชื่อลูกค้า/บริษัท" class="bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none">
           <input type="text" id="cAddress" placeholder="ที่อยู่" class="col-span-2 bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none">
           <input type="text" id="cTax" placeholder="เลขผู้เสียภาษี" class="bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none">
-          <input type="text" id="cPhone" placeholder="เบอร์โทรศัพท์" class="bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none">
-          
-          <div class="col-span-2 mt-1">
-            <label class="text-[11px] text-[#726E68] ml-1 mb-1.5 block">ประเภทลูกค้า</label>
-            <div class="flex gap-2">
-              <button type="button" id="btnPersonal" onclick="setCustomerType('นามบุคคล')" 
-                      class="flex-1 py-3 rounded-xl border border-[#B7B4AE] bg-[#33312F] text-[#B7B4AE] font-bold text-[13px] transition-all shadow-md flex justify-center items-center gap-1.5">
-                <i class="ph-bold ph-user text-lg"></i> นามบุคคล
-              </button>
-              <button type="button" id="btnCompany" onclick="setCustomerType('นามบริษัท')" 
-                      class="flex-1 py-3 rounded-xl border border-[#33312F] bg-[#0A0A0A] text-[#726E68] font-medium text-[13px] hover:border-[#726E68] hover:text-[#B7B4AE] transition-all flex justify-center items-center gap-1.5">
-                <i class="ph-bold ph-buildings text-lg"></i> นามบริษัท
-              </button>
-            </div>
-            <input type="hidden" id="cType" value="นามบุคคล">
-          </div>
-
-          <input type="email" id="cEmail" placeholder="Email" class="col-span-2 bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none">
+          <input type="text" id="cType" placeholder="ประเภท" class="bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none">
+          <input type="email" id="cEmail" placeholder="Emil" class="col-span-2 bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white outline-none">
         </div>
         <button id="btnCustomer" onclick="saveCustomer()" class="w-full bg-[#33312F] hover:bg-[#726E68] text-white py-4 rounded-xl font-bold tracking-wide transition duration-300 flex items-center justify-center gap-2 mt-2">
           <i class="ph-bold ph-floppy-disk text-xl"></i> บันทึกลูกค้าใหม่
@@ -216,10 +186,12 @@
       </div>
     </div>
 
+  </div>
+
   <!-- Javascript -->
   <script>
     // 🟢 เปลี่ยน API_URL ตรงนี้ให้เป็นของคุณ 🟢
-    const API_URL = "https://script.google.com/macros/s/AKfycbxMHwdBSf5CDMai6Vbjk5edv3zN5OmOkCzfB-0_Er2NTk4Ffc6658cLict_pHoUf9RY/exec"; 
+    const API_URL = "https://script.google.com/macros/s/AKfycbxANQ5RNZmnjK-is2eyHyoZaw1cOQlmd97aPiPvPlHy3fQuKLuQurM9OvbqY2NbbADt/exec"; 
     
     let menuDataList = [];
     let currentItems = [];
@@ -363,134 +335,50 @@
       sendToAPI(payload, "GENERATING PDF...");
     }
 
-        // ฟังก์ชันสำหรับสลับปุ่ม นามบุคคล / นามบริษัท
-    function setCustomerType(type) {
-      document.getElementById('cType').value = type;
-      let btnP = document.getElementById('btnPersonal');
-      let btnC = document.getElementById('btnCompany');
-      
-      if(type === 'นามบุคคล') {
-        btnP.className = "flex-1 py-3 rounded-xl border border-[#B7B4AE] bg-[#33312F] text-[#B7B4AE] font-bold text-[13px] transition-all shadow-md flex justify-center items-center gap-1.5";
-        btnC.className = "flex-1 py-3 rounded-xl border border-[#33312F] bg-[#0A0A0A] text-[#726E68] font-medium text-[13px] hover:border-[#726E68] hover:text-[#B7B4AE] transition-all flex justify-center items-center gap-1.5";
-      } else {
-        btnC.className = "flex-1 py-3 rounded-xl border border-[#B7B4AE] bg-[#33312F] text-[#B7B4AE] font-bold text-[13px] transition-all shadow-md flex justify-center items-center gap-1.5";
-        btnP.className = "flex-1 py-3 rounded-xl border border-[#33312F] bg-[#0A0A0A] text-[#726E68] font-medium text-[13px] hover:border-[#726E68] hover:text-[#B7B4AE] transition-all flex justify-center items-center gap-1.5";
-      }
+    function saveCustomer() {
+      let payload = {
+        action: "saveCustomer", cid: document.getElementById("cId").value, cname: document.getElementById("cName").value,
+        caddress: document.getElementById("cAddress").value, ctax: document.getElementById("cTax").value,
+        ctype: document.getElementById("cType").value, cemail: document.getElementById("cEmail").value, cphone: document.getElementById("cPhone").value
+      };
+      sendToAPI(payload, "SAVING CUSTOMER...");
     }
-
-        // ----------------------------------------------------
-    // 🟢 ฟังก์ชันโหลดรายการบิล และ ระบบคลิก (Control Panel)
-    // ----------------------------------------------------
-    let globalOrders = []; // ตัวแปรเก็บข้อมูลบิลไว้ใช้ตอนคลิก
-
+    // 🟢 เอาโค้ดมาวางแทรกตรงนี้เลยครับ! ก่อนปิด
     function loadOrderList() {
       setLoading(true, "LOADING ORDERS...");
-
-      fetch(API_URL + "?action=getOrders")
+      
+      fetch(API_URL + "?action=getOrders") 
       .then(res => res.json())
       .then(data => {
-        globalOrders = data;
-        
-        // เรียงลำดับ: ยังไม่ปริ้นขึ้นก่อน
+        // เรียงลำดับเอาอันที่ยังไม่ได้ปริ้นขึ้นก่อน
         data.sort((a, b) => {
-          if (a.printed !== b.printed) return a.printed ? 1 : -1;
+          if (a.printed !== b.printed) {
+            return a.printed ? 1 : -1; 
+          }
+          // ถ้าอยากให้บิลล่าสุดขึ้นก่อนด้วย ให้เพิ่มบรรทัดนี้ครับ:
           return b.doc.localeCompare(a.doc); 
         });
 
         let listDiv = document.getElementById("orderList");
         if(data.length === 0) {
-           listDiv.innerHTML = `<div class="text-center text-[#726E68] text-[13px] py-4">ไม่มีข้อมูลรายการ</div>`;
+           listDiv.innerHTML = `<div class="text-center text-[#726E68] text-xs py-4">ไม่มีข้อมูลรายการ</div>`;
            return;
         }
 
-        // วาดการ์ดรายการ (ใส่ onclick="selectOrder" ไว้ให้แล้ว)
-        listDiv.innerHTML = data.map(o => {
-          if (!o.printed) {
-            // ยังไม่ปริ้น (สีส้ม)
-            return `
-            <div class="flex items-center justify-between p-4 bg-[#111111] rounded-xl border border-[#D95F29]/40 hover:border-[#D95F29] cursor-pointer transition-all" onclick="selectOrder('${o.doc}')">
-              <div class="flex flex-col gap-1.5">
-                <div class="text-white font-bold text-[14px] tracking-wide">${o.doc}</div>
-                <div class="text-[12px] text-[#D95F29] flex items-center gap-1 font-medium">
-                  <i class="ph-bold ph-pencil-simple"></i> รอปริ้น (วันที่: ${o.date || '-'})
-                </div>
-              </div>
-              <div>
-                <button class="px-4 py-1.5 rounded-lg border border-[#D95F29]/40 text-[#D95F29] text-[11px] font-bold tracking-widest bg-[#D95F29]/10">
-                  Print
-                </button>
-              </div>
-            </div>`;
-          } else {
-            // ปริ้นแล้ว (สีเทา)
-            return `
-            <div class="flex items-center justify-between p-4 bg-[#111111] rounded-xl border border-[#33312F] opacity-60 hover:opacity-100 cursor-pointer transition-all" onclick="selectOrder('${o.doc}')">
-              <div class="flex flex-col gap-1.5">
-                <div class="text-[#726E68] font-bold text-[14px] tracking-wide">${o.doc}</div>
-                <div class="text-[12px] text-[#726E68] flex items-center gap-1">
-                  <i class="ph-bold ph-check-circle"></i> ปริ้นแล้ว (วันที่: ${o.date || '-'})
-                </div>
-              </div>
-              <div>
-                <button class="px-4 py-1.5 rounded-lg border border-[#33312F] text-[#726E68] text-[11px] font-bold tracking-widest bg-[#1A1A1A]">
-                  Done
-                </button>
-              </div>
-            </div>`;
-          }
-        }).join('');
+        listDiv.innerHTML = data.map(o => `
+          <div class="flex justify-between items-center p-3 bg-[#0A0A0A] rounded-lg border ${o.printed ? 'border-green-900/30' : 'border-red-900/50'} cursor-pointer hover:bg-[#1A1A1A] transition" onclick="document.getElementById('pdfDocNo').value='${o.doc}'">
+            <div>
+              <div class="text-white font-bold text-sm">${o.doc}</div>
+              <div class="text-[10px] text-[#726E68]">วันที่: ${o.date || '-'}</div>
+            </div>
+            <span class="${o.printed ? 'text-green-500' : 'text-red-500'} font-medium text-xs bg-[#33312F]/50 px-2 py-1 rounded">
+              ${o.printed ? '✓ ปริ้นแล้ว' : '⌛ รอปริ้น'}
+            </span>
+          </div>
+        `).join('');
       })
-      .catch(err => {
-        console.error(err);
-        alert("ไม่สามารถดึงข้อมูลได้");
-      })
+      .catch(err => alert("Error: ไม่สามารถดึงข้อมูลได้ โปรดตรวจสอบ Code.gs ฝั่งหลังบ้าน"))
       .finally(() => setLoading(false));
-    }
-
-    // ฟังก์ชันทำงานเวลาคลิกที่บิล
-    function selectOrder(docNo) {
-      let order = globalOrders.find(o => o.doc === docNo);
-      if(!order) return;
-
-      // อัปเดตข้อความในแผง Control Panel ด้านล่าง
-      document.getElementById('panelDocNo').innerText = order.doc;
-      document.getElementById('pdfDocNo').value = order.doc; 
-      document.getElementById('panelDate').innerText = order.date || "-";
-      document.getElementById('panelNote').innerText = order.note || "ไม่มีหมายเหตุ";
-
-      let actionDiv = document.getElementById('panelActions');
-
-      if(order.printed) {
-        // [ถ้าปริ้นแล้ว] - โชว์ปุ่มเปิดเอกสาร / ส่งเมล / สั่งใหม่
-        actionDiv.innerHTML = `
-          <div class="space-y-3">
-            <button class="w-full bg-[#1A1A1A] hover:bg-[#222222] text-[#D95F29] py-3 rounded-xl text-[13px] font-bold tracking-wide flex items-center justify-center gap-2 border border-[#33312F] transition-all">
-              <i class="ph-fill ph-file-pdf text-lg"></i> คลิกเปิดเอกสาร PDF
-            </button>
-            <button onclick="runPDF()" class="w-full bg-[#D95F29] hover:bg-[#c25323] text-white py-3 rounded-xl text-[13px] font-bold tracking-wide flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#D95F29]/20">
-              <i class="ph-bold ph-arrows-clockwise text-lg"></i> ออกเอกสาร PDF ใหม่อีกครั้ง
-            </button>
-            <div class="flex items-center gap-2 mt-2">
-              <input type="email" id="pdfEmail" placeholder="Email address..." class="flex-1 bg-[#1A1A1A] border border-[#33312F] rounded-xl p-3 text-[13px] text-white focus:outline-none focus:border-[#D95F29]">
-              <button onclick="runPDF()" class="bg-[#1A1A1A] border border-[#33312F] hover:border-[#D95F29] text-[#726E68] hover:text-[#D95F29] px-5 py-3 rounded-xl text-[13px] font-bold transition-all">
-                Send
-              </button>
-            </div>
-          </div>
-        `;
-      } else {
-        // [ถ้ายังไม่ปริ้น] - โชว์ปุ่มสั่งปริ้นใหญ่ๆ 
-        actionDiv.innerHTML = `
-          <div class="space-y-3">
-            <div class="text-center text-[#726E68] text-[12px] py-3 bg-[#1A1A1A] rounded-xl border border-[#33312F]">
-              บิลนี้ยังไม่ได้รับคำสั่งออกไฟล์ PDF
-            </div>
-            <button onclick="runPDF()" class="w-full bg-[#D95F29] hover:bg-[#c25323] text-white py-3.5 rounded-xl text-[13px] font-bold tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-[#D95F29]/20 transition-all">
-              <i class="ph-bold ph-printer text-xl"></i> PRINT PDF
-            </button>
-          </div>
-        `;
-      }
     }
   </script>
 </body>
