@@ -11,7 +11,7 @@
   <style>
     body { font-family: 'Sarabun', sans-serif; background-color: #0A0A0A; color: #B7B4AE; }
     
-    /* ระบบ Loading Animation รูปใบไม้ */
+    /* ระบบ Loading Animation รูปใบไม้ที่คุณชอบ */
     .loader { display: flex; gap: 8px; margin-bottom: 15px; }
     .leaf { width: 15px; height: 15px; background-color: #726E68; border-radius: 50% 0 50% 50%; animation: spin 1.5s linear infinite; }
     .leaf:nth-child(2) { animation-delay: 0.2s; }
@@ -133,7 +133,7 @@
     </div>
 
     <!-- ================= แท็บ 2: Print PDF ================= -->
-    <div id="PrintTab" class="tabcontent" style="display:none;">
+                <div id="PrintTab" class="tabcontent" style="display:none;">
       
       <div class="flex items-center justify-between mb-4 mt-2">
         <div>
@@ -145,7 +145,8 @@
         </button>
       </div>
 
-      <div id="orderList" class="space-y-2 mb-6 max-h-[300px] overflow-y-auto custom-scrollbar"></div>
+      <div id="orderList" class="space-y-2 mb-6 max-h-[300px] overflow-y-auto custom-scrollbar">
+        </div>
 
       <div class="bg-[#111111] rounded-2xl border border-[#33312F] p-4 shadow-xl mb-4">
         <div class="flex items-center gap-2 mb-4">
@@ -177,8 +178,9 @@
       </div>
     </div>
 
+
     <!-- ================= แท็บ 3: Customers ================= -->
-    <div id="CustomerTab" class="tabcontent space-y-4" style="display:none;">
+        <div id="CustomerTab" class="tabcontent space-y-4" style="display:none;">
       <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 space-y-4 shadow-lg">
          <div class="flex items-center gap-2 mb-4">
           <i class="ph-bold ph-users text-[#726E68]"></i>
@@ -213,8 +215,6 @@
         </button>
       </div>
     </div>
-
-  </div>
 
   <!-- Javascript -->
   <script>
@@ -363,21 +363,7 @@
       sendToAPI(payload, "GENERATING PDF...");
     }
 
-    function saveCustomer() {
-      let payload = {
-        action: "saveCustomer", 
-        cid: document.getElementById("cId").value, 
-        cname: document.getElementById("cName").value,
-        caddress: document.getElementById("cAddress").value, 
-        ctax: document.getElementById("cTax").value,
-        ctype: document.getElementById("cType").value, 
-        cemail: document.getElementById("cEmail").value, 
-        cphone: document.getElementById("cPhone").value
-      };
-      sendToAPI(payload, "SAVING CUSTOMER...");
-    }
-
-    // ฟังก์ชันสำหรับสลับปุ่ม นามบุคคล / นามบริษัท
+        // ฟังก์ชันสำหรับสลับปุ่ม นามบุคคล / นามบริษัท
     function setCustomerType(type) {
       document.getElementById('cType').value = type;
       let btnP = document.getElementById('btnPersonal');
@@ -392,10 +378,10 @@
       }
     }
 
-    // ----------------------------------------------------
+        // ----------------------------------------------------
     // 🟢 ฟังก์ชันโหลดรายการบิล และ ระบบคลิก (Control Panel)
     // ----------------------------------------------------
-    let globalOrders = []; 
+    let globalOrders = []; // ตัวแปรเก็บข้อมูลบิลไว้ใช้ตอนคลิก
 
     function loadOrderList() {
       setLoading(true, "LOADING ORDERS...");
@@ -405,6 +391,7 @@
       .then(data => {
         globalOrders = data;
         
+        // เรียงลำดับ: ยังไม่ปริ้นขึ้นก่อน
         data.sort((a, b) => {
           if (a.printed !== b.printed) return a.printed ? 1 : -1;
           return b.doc.localeCompare(a.doc); 
@@ -416,8 +403,10 @@
            return;
         }
 
+        // วาดการ์ดรายการ (ใส่ onclick="selectOrder" ไว้ให้แล้ว)
         listDiv.innerHTML = data.map(o => {
           if (!o.printed) {
+            // ยังไม่ปริ้น (สีส้ม)
             return `
             <div class="flex items-center justify-between p-4 bg-[#111111] rounded-xl border border-[#D95F29]/40 hover:border-[#D95F29] cursor-pointer transition-all" onclick="selectOrder('${o.doc}')">
               <div class="flex flex-col gap-1.5">
@@ -433,6 +422,7 @@
               </div>
             </div>`;
           } else {
+            // ปริ้นแล้ว (สีเทา)
             return `
             <div class="flex items-center justify-between p-4 bg-[#111111] rounded-xl border border-[#33312F] opacity-60 hover:opacity-100 cursor-pointer transition-all" onclick="selectOrder('${o.doc}')">
               <div class="flex flex-col gap-1.5">
@@ -462,6 +452,7 @@
       let order = globalOrders.find(o => o.doc === docNo);
       if(!order) return;
 
+      // อัปเดตข้อความในแผง Control Panel ด้านล่าง
       document.getElementById('panelDocNo').innerText = order.doc;
       document.getElementById('pdfDocNo').value = order.doc; 
       document.getElementById('panelDate').innerText = order.date || "-";
@@ -470,9 +461,10 @@
       let actionDiv = document.getElementById('panelActions');
 
       if(order.printed) {
+        // [ถ้าปริ้นแล้ว] - โชว์ปุ่มเปิดเอกสาร / ส่งเมล / สั่งใหม่
         actionDiv.innerHTML = `
           <div class="space-y-3">
-            <button onclick="if('${order.url}') { window.open('${order.url}', '_blank'); } else { alert('ไม่พบลิงก์ไฟล์ PDF'); }" class="w-full bg-[#1A1A1A] hover:bg-[#222222] text-[#D95F29] py-3 rounded-xl text-[13px] font-bold tracking-wide flex items-center justify-center gap-2 border border-[#33312F] transition-all">
+            <button class="w-full bg-[#1A1A1A] hover:bg-[#222222] text-[#D95F29] py-3 rounded-xl text-[13px] font-bold tracking-wide flex items-center justify-center gap-2 border border-[#33312F] transition-all">
               <i class="ph-fill ph-file-pdf text-lg"></i> คลิกเปิดเอกสาร PDF
             </button>
             <button onclick="runPDF()" class="w-full bg-[#D95F29] hover:bg-[#c25323] text-white py-3 rounded-xl text-[13px] font-bold tracking-wide flex items-center justify-center gap-2 transition-all shadow-lg shadow-[#D95F29]/20">
@@ -487,6 +479,7 @@
           </div>
         `;
       } else {
+        // [ถ้ายังไม่ปริ้น] - โชว์ปุ่มสั่งปริ้นใหญ่ๆ 
         actionDiv.innerHTML = `
           <div class="space-y-3">
             <div class="text-center text-[#726E68] text-[12px] py-3 bg-[#1A1A1A] rounded-xl border border-[#33312F]">
