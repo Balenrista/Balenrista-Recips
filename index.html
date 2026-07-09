@@ -4,13 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Balenrista - Order System</title>
+  <!-- นำเข้า Tailwind CSS และ Phosphor Icons ให้ตรงกับธีมเดิม -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     body { font-family: 'Sarabun', sans-serif; background-color: #0A0A0A; color: #B7B4AE; }
     
-    /* ระบบ Loading Animation รูปใบไม้ที่คุณชอบ */
+    /* ระบบ Loading Animation รูปใบไม้ */
     .loader { display: flex; gap: 8px; margin-bottom: 15px; }
     .leaf { width: 15px; height: 15px; background-color: #726E68; border-radius: 50% 0 50% 50%; animation: spin 1.5s linear infinite; }
     .leaf:nth-child(2) { animation-delay: 0.2s; }
@@ -29,6 +30,7 @@
 </head>
 <body class="p-4 md:p-6 pb-12">
 
+  <!-- Loading Screen (ซ่อนไว้ เริ่มทำงานเมื่อมีการบันทึก/โหลด) -->
   <div id="loading" class="fixed inset-0 bg-[#0A0A0A]/90 z-[999] flex flex-col items-center justify-center backdrop-blur-sm" style="display: none;">
     <div class="loader">
       <div class="leaf"></div><div class="leaf"></div><div class="leaf"></div>
@@ -38,12 +40,14 @@
 
   <div class="max-w-xl mx-auto space-y-6">
     
+    <!-- ส่วนหัว Header -->
     <div class="flex items-center justify-center mb-6 mt-4">
       <h1 class="text-2xl font-bold text-white tracking-widest flex items-center gap-2">
         <i class="ph-fill ph-coffee text-[#726E68]"></i> BALENRISTA
       </h1>
     </div>
 
+    <!-- เมนู Tabs สไตล์ Segmented Control แบบพรีเมียม -->
     <div class="flex space-x-2 bg-[#1A1A1A] p-1.5 rounded-xl border border-[#33312F]">
       <button class="tab-btn active flex-1 py-3 rounded-lg text-sm font-medium text-[#726E68] flex flex-col items-center gap-1" onclick="openTab(event, 'OrderTab')">
         <i class="ph-bold ph-receipt text-xl"></i> รับออเดอร์
@@ -56,8 +60,10 @@
       </button>
     </div>
 
+    <!-- ================= แท็บ 1: รับออเดอร์ (Orders) ================= -->
     <div id="OrderTab" class="tabcontent space-y-4" style="display:block;">
       
+      <!-- กล่อง 1: ข้อมูลบิลหลัก -->
       <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 space-y-4 shadow-lg">
         <div class="flex items-center gap-2 mb-2">
           <i class="ph-bold ph-file-text text-[#726E68]"></i>
@@ -72,6 +78,7 @@
         </div>
       </div>
 
+      <!-- กล่อง 2: เพิ่มรายการเมนู -->
       <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 space-y-4 shadow-lg">
         <div class="flex items-center gap-2 mb-2">
           <i class="ph-bold ph-coffee text-[#726E68]"></i>
@@ -99,6 +106,7 @@
         </button>
       </div>
 
+      <!-- กล่อง 3: ตะกร้าและสรุปยอด -->
       <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 shadow-lg overflow-hidden">
         <table class="w-full text-left border-collapse">
           <thead>
@@ -110,7 +118,8 @@
             </tr>
           </thead>
           <tbody id="itemTbody" class="text-sm text-white divide-y divide-[#33312F]/50">
-            </tbody>
+            <!-- ข้อมูลตะกร้าจะมาแสดงตรงนี้ -->
+          </tbody>
         </table>
         <div class="mt-4 pt-4 border-t border-[#726E68]/30 flex justify-between items-center text-white">
           <span class="font-medium text-[#726E68]">ยอดรวมทั้งสิ้น</span>
@@ -123,6 +132,7 @@
       </button>
     </div>
 
+    <!-- ================= แท็บ 2: Print PDF ================= -->
     <div id="PrintTab" class="tabcontent" style="display:none;">
       
       <div class="flex items-center justify-between mb-4 mt-2">
@@ -167,6 +177,7 @@
       </div>
     </div>
 
+    <!-- ================= แท็บ 3: Customers ================= -->
     <div id="CustomerTab" class="tabcontent space-y-4" style="display:none;">
       <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 space-y-4 shadow-lg">
          <div class="flex items-center gap-2 mb-4">
@@ -205,9 +216,10 @@
 
   </div>
 
+  <!-- Javascript -->
   <script>
     // 🟢 เปลี่ยน API_URL ตรงนี้ให้เป็นของคุณ 🟢
-    const API_URL = "https://script.google.com/macros/s/AKfycbwt9ppc3L-0gr1Iq6gSnpFcYKRUZr74hQlocYWKD2W3ExONRquhcN4u4LAiYahvKuAH/exec"; 
+    const API_URL = "https://script.google.com/macros/s/AKfycbwitaHLaNQc-xrt_zAaBipdVu5psA9-kJrfcIZXBQmIwsRuSPMJFXqWIySAFMET8Pxz/exec"; 
     
     let menuDataList = [];
     let currentItems = [];
@@ -445,7 +457,7 @@
       .finally(() => setLoading(false));
     }
 
-    // ฟังก์ชันทำงานเวลาคลิกที่บิล (แก้ไขเรียบร้อยแล้ว)
+    // ฟังก์ชันทำงานเวลาคลิกที่บิล
     function selectOrder(docNo) {
       let order = globalOrders.find(o => o.doc === docNo);
       if(!order) return;
