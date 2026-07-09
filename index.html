@@ -124,6 +124,7 @@
         <div>
           <label class="text-xs text-[#726E68] ml-1">เลขที่เอกสาร</label>
           <input type="text" id="pdfDocNo" placeholder="เช่น BA260708-..." class="w-full bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white focus:border-[#726E68] outline-none mt-1">
+          <input type="hidden" id="pdfRowNum" value="">
         </div>
         <div>
           <label class="text-xs text-[#726E68] ml-1">ส่งไปที่อีเมล</label>
@@ -181,7 +182,7 @@
   </div>
 
   <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbwLauBpKgtFo8zg7ExRUFW4gowB25h6i_A_RAud4VKPgxSPR_k1i1gzCbvKXkoPr1g1/exec"; 
+    const API_URL = "https://script.google.com/macros/s/AKfycbz-qqj5EQRzA-xXQzTSChpDWZ30z1bcsNJnaV4v-vVKektaE_39lrMKgrRi3kTXbgap/exec"; 
     
     let menuDataList = [];
     let currentItems = [];
@@ -326,9 +327,12 @@
       });
     }
 
-    function triggerPDF(isEmailAction) {
+        function triggerPDF(isEmailAction) {
       let docNo = document.getElementById("pdfDocNo").value;
       let email = document.getElementById("pdfEmail").value;
+      
+      // 🟢 ดึงเลขบรรทัดจากช่องลับมาเตรียมไว้
+      let rowNum = document.getElementById("pdfRowNum").value; 
       
       if(!docNo) return alert("Please enter the Document Number.");
       if(isEmailAction && !email) return alert("Please enter a valid email address.");
@@ -337,13 +341,19 @@
         action: "runPDF", 
         docNo: docNo, 
         email: email,
-        isEmailAction: isEmailAction 
+        isEmailAction: isEmailAction,
+        // 🟢 แนบเลขบรรทัดส่งไปให้ code.gs (ถ้าไม่มีค่าให้ส่งไปเป็น 0)
+        rowNum: rowNum ? parseInt(rowNum) : 0 
       };
       
       let loadingMessage = isEmailAction ? "SENDING EMAIL..." : "GENERATING PDF...";
       
       sendToAPI(payload, loadingMessage, () => {
         loadOrderList(); 
+        
+        // 🟢 เคลียร์ค่าหลังทำงานเสร็จ
+        document.getElementById("pdfRowNum").value = ""; 
+        
         if(!isEmailAction) {
           document.getElementById("pdfDocNo").value = "";
         } else {
@@ -352,6 +362,7 @@
         }
       });
     }
+
 
     function saveCustomer() {
       let payload = {
@@ -395,7 +406,7 @@
         }
 
         listDiv.innerHTML = data.map(o => `
-          <div class="flex justify-between items-center p-3 bg-[#0A0A0A] rounded-lg border ${o.printed ? 'border-green-900/40 bg-green-950/5' : 'border-red-900/50 bg-red-950/5'} cursor-pointer hover:bg-[#1A1A1A] transition" onclick="document.getElementById('pdfDocNo').value='${o.doc}'">
+            <div class="flex justify-between items-center p-3 bg-[#0A0A0A] rounded-lg border ${o.printed ? 'border-green-900/40 bg-green-950/5' : 'border-red-900/50 bg-red-950/5'} cursor-pointer hover:bg-[#1A1A1A] transition" onclick="document.getElementById('pdfDocNo').value='${o.doc}'; document.getElementById('pdfRowNum').value='${o.rowNum || 0}';">
             <div class="space-y-0.5">
               <div class="text-white font-bold text-sm tracking-wide">${o.doc}</div>
               <div class="text-[11px] text-[#A3A019] font-medium flex items-center gap-1">
