@@ -76,11 +76,11 @@
         <div class="grid grid-cols-3 gap-3">
           <div class="relative">
              <span class="absolute top-[-10px] left-3 bg-[#1A1A1A] px-1 text-xs text-[#726E68]">จำนวน</span>
-             <input type="number" id="oQty" onkeyup="calcTotal()" class="w-full bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white text-center focus:outline-none">
+             <input type="number" id="oQty" oninput="calcTotal()" class="w-full bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white text-center focus:outline-none">
           </div>
           <div class="relative">
              <span class="absolute top-[-10px] left-3 bg-[#1A1A1A] px-1 text-xs text-[#726E68]">ราคา/หน่วย</span>
-             <input type="number" id="oPrice" onkeyup="calcTotal()" class="w-full bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white text-center focus:outline-none">
+             <input type="number" id="oPrice" oninput="calcTotal()" class="w-full bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white text-center focus:outline-none">
           </div>
           <div class="relative">
              <span class="absolute top-[-10px] left-3 bg-[#1A1A1A] px-1 text-xs text-[#726E68]">รวม</span>
@@ -181,8 +181,7 @@
   </div>
 
   <script>
-    // 🔴 อย่าลืมเปลี่ยนเป็น Web App URL ล่าสุดที่คุณกดอัปเดตเวอร์ชันมานะครับ 🔴
-    const API_URL = "https://script.google.com/macros/s/AKfycbx7i-bW58IfkgoEoc9ROx1xUK-I_2MQHO4pV1v8r3dP3mWeWPISrepPOWrsbkswk3OD/exec"; 
+    const API_URL = "https://script.google.com/macros/s/AKfycbxn902dHEV9RbTCZ2F4bRH7WCRRDePVuffC5GmMrZRcaKi4R0Ptqfbb7tixTF-Tus3P/exec"; 
     
     let menuDataList = [];
     let currentItems = [];
@@ -220,7 +219,7 @@
 
     window.onload = function() {
       autoGenerateBillAndDate();
-      setLoading(true, "FETCHING DATA...");
+      setLoading(true, "FETCHING DATA... (1/2)");
 
       fetch(API_URL + "?action=getDropdowns")
       .then(res => res.json())
@@ -235,7 +234,7 @@
           data.menus.forEach(m => menuSelect.innerHTML += `<option value="${m.name}">${m.name}</option>`);
         }
       })
-      .catch(err => console.log("Error loading data", err))
+      .catch(err => console.error("Error loading dropdowns:", err))
       .finally(() => setLoading(false));
     };
 
@@ -249,9 +248,9 @@
     }
 
     function calcTotal() {
-      let p = document.getElementById("oPrice").value;
-      let q = document.getElementById("oQty").value;
-      if(p && q) document.getElementById("oTotal").value = parseFloat(p) * parseFloat(q);
+      let p = parseFloat(document.getElementById("oPrice").value) || 0;
+      let q = parseFloat(document.getElementById("oQty").value) || 0;
+      document.getElementById("oTotal").value = p * q;
     }
 
     function addItem() {
@@ -276,7 +275,7 @@
       let grandTotal = 0;
       
       currentItems.forEach((item, index) => {
-        grandTotal += parseFloat(item.total);
+        grandTotal += parseFloat(item.total) || 0;
         tbody.innerHTML += `
           <tr class="hover:bg-[#33312F]/30 transition">
             <td class="py-3">${item.menu}</td>
@@ -420,15 +419,18 @@
     }
 
     function setCustomerType(type) {
-      document.getElementById("cType").value = type;
       const btnPerson = document.getElementById("btnTypePerson");
       const btnCompany = document.getElementById("btnTypeCompany");
+      const cTypeInput = document.getElementById("cType");
+      
+      if(cTypeInput) cTypeInput.value = type;
+      
       if (type === 'นามบุคคล') {
-        btnPerson.className = "flex-1 py-2.5 rounded-md text-xs font-medium bg-[#33312F] text-white border border-[#726E68] transition duration-300";
-        btnCompany.className = "flex-1 py-2.5 rounded-md text-xs font-medium text-[#726E68] transition duration-300";
+        if(btnPerson) btnPerson.className = "flex-1 py-2.5 rounded-md text-xs font-medium bg-[#33312F] text-white border border-[#726E68] transition duration-300";
+        if(btnCompany) btnCompany.className = "flex-1 py-2.5 rounded-md text-xs font-medium text-[#726E68] transition duration-300";
       } else {
-        btnPerson.className = "flex-1 py-2.5 rounded-md text-xs font-medium text-[#726E68] transition duration-300";
-        btnCompany.className = "flex-1 py-2.5 rounded-md text-xs font-medium bg-[#33312F] text-white border border-[#726E68] transition duration-300";
+        if(btnPerson) btnPerson.className = "flex-1 py-2.5 rounded-md text-xs font-medium text-[#726E68] transition duration-300";
+        if(btnCompany) btnCompany.className = "flex-1 py-2.5 rounded-md text-xs font-medium bg-[#33312F] text-white border border-[#726E68] transition duration-300";
       }
     }
   </script>
