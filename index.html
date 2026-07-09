@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Balenrista - Order System</title>
-  <!-- นำเข้า Tailwind CSS และ Phosphor Icons ให้ตรงกับธีมเดิม -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -30,7 +29,6 @@
 </head>
 <body class="p-4 md:p-6 pb-12">
 
-  <!-- Loading Screen (ซ่อนไว้ เริ่มทำงานเมื่อมีการบันทึก/โหลด) -->
   <div id="loading" class="fixed inset-0 bg-[#0A0A0A]/90 z-[999] flex flex-col items-center justify-center backdrop-blur-sm" style="display: none;">
     <div class="loader">
       <div class="leaf"></div><div class="leaf"></div><div class="leaf"></div>
@@ -40,14 +38,12 @@
 
   <div class="max-w-xl mx-auto space-y-6">
     
-    <!-- ส่วนหัว Header -->
     <div class="flex items-center justify-center mb-6 mt-4">
       <h1 class="text-2xl font-bold text-white tracking-widest flex items-center gap-2">
         <i class="ph-fill ph-coffee text-[#726E68]"></i> BALENRISTA
       </h1>
     </div>
 
-    <!-- เมนู Tabs สไตล์ Segmented Control แบบพรีเมียม -->
     <div class="flex space-x-2 bg-[#1A1A1A] p-1.5 rounded-xl border border-[#33312F]">
       <button class="tab-btn active flex-1 py-3 rounded-lg text-sm font-medium text-[#726E68] flex flex-col items-center gap-1" onclick="openTab(event, 'OrderTab')">
         <i class="ph-bold ph-receipt text-xl"></i> รับออเดอร์
@@ -60,10 +56,8 @@
       </button>
     </div>
 
-    <!-- ================= แท็บ 1: รับออเดอร์ (Orders) ================= -->
     <div id="OrderTab" class="tabcontent space-y-4" style="display:block;">
       
-      <!-- กล่อง 1: ข้อมูลบิลหลัก -->
       <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 space-y-4 shadow-lg">
         <div class="flex items-center gap-2 mb-2">
           <i class="ph-bold ph-file-text text-[#726E68]"></i>
@@ -78,7 +72,6 @@
         </div>
       </div>
 
-      <!-- กล่อง 2: เพิ่มรายการเมนู -->
       <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 space-y-4 shadow-lg">
         <div class="flex items-center gap-2 mb-2">
           <i class="ph-bold ph-coffee text-[#726E68]"></i>
@@ -106,7 +99,6 @@
         </button>
       </div>
 
-      <!-- กล่อง 3: ตะกร้าและสรุปยอด -->
       <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 shadow-lg overflow-hidden">
         <table class="w-full text-left border-collapse">
           <thead>
@@ -118,8 +110,7 @@
             </tr>
           </thead>
           <tbody id="itemTbody" class="text-sm text-white divide-y divide-[#33312F]/50">
-            <!-- ข้อมูลตะกร้าจะมาแสดงตรงนี้ -->
-          </tbody>
+            </tbody>
         </table>
         <div class="mt-4 pt-4 border-t border-[#726E68]/30 flex justify-between items-center text-white">
           <span class="font-medium text-[#726E68]">ยอดรวมทั้งสิ้น</span>
@@ -132,8 +123,7 @@
       </button>
     </div>
 
-    <!-- ================= แท็บ 2: Print PDF ================= -->
-                <div id="PrintTab" class="tabcontent" style="display:none;">
+    <div id="PrintTab" class="tabcontent" style="display:none;">
       
       <div class="flex items-center justify-between mb-4 mt-2">
         <div>
@@ -145,8 +135,7 @@
         </button>
       </div>
 
-      <div id="orderList" class="space-y-2 mb-6 max-h-[300px] overflow-y-auto custom-scrollbar">
-        </div>
+      <div id="orderList" class="space-y-2 mb-6 max-h-[300px] overflow-y-auto custom-scrollbar"></div>
 
       <div class="bg-[#111111] rounded-2xl border border-[#33312F] p-4 shadow-xl mb-4">
         <div class="flex items-center gap-2 mb-4">
@@ -178,9 +167,7 @@
       </div>
     </div>
 
-
-    <!-- ================= แท็บ 3: Customers ================= -->
-        <div id="CustomerTab" class="tabcontent space-y-4" style="display:none;">
+    <div id="CustomerTab" class="tabcontent space-y-4" style="display:none;">
       <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 space-y-4 shadow-lg">
          <div class="flex items-center gap-2 mb-4">
           <i class="ph-bold ph-users text-[#726E68]"></i>
@@ -216,10 +203,11 @@
       </div>
     </div>
 
-  <!-- Javascript -->
+  </div>
+
   <script>
     // 🟢 เปลี่ยน API_URL ตรงนี้ให้เป็นของคุณ 🟢
-    const API_URL = "https://script.google.com/macros/s/AKfycbw51YRgGlyiWtilnXnrVUeiX0iKEPTaH_QQq-r7EMkSzVHibsk5vV0ckU1eNk5hw42Z/exec"; 
+    const API_URL = "https://script.google.com/macros/s/AKfycbxnb2kU7Hb1fHqhAnoZnQ85mH7vFFhNvZgpKPZkmS4BM30dH0OL2L11EwP-slqL-nGD/exec"; 
     
     let menuDataList = [];
     let currentItems = [];
@@ -363,7 +351,21 @@
       sendToAPI(payload, "GENERATING PDF...");
     }
 
-        // ฟังก์ชันสำหรับสลับปุ่ม นามบุคคล / นามบริษัท
+    function saveCustomer() {
+      let payload = {
+        action: "saveCustomer", 
+        cid: document.getElementById("cId").value, 
+        cname: document.getElementById("cName").value,
+        caddress: document.getElementById("cAddress").value, 
+        ctax: document.getElementById("cTax").value,
+        ctype: document.getElementById("cType").value, 
+        cemail: document.getElementById("cEmail").value, 
+        cphone: document.getElementById("cPhone").value
+      };
+      sendToAPI(payload, "SAVING CUSTOMER...");
+    }
+
+    // ฟังก์ชันสำหรับสลับปุ่ม นามบุคคล / นามบริษัท
     function setCustomerType(type) {
       document.getElementById('cType').value = type;
       let btnP = document.getElementById('btnPersonal');
@@ -378,10 +380,10 @@
       }
     }
 
-        // ----------------------------------------------------
+    // ----------------------------------------------------
     // 🟢 ฟังก์ชันโหลดรายการบิล และ ระบบคลิก (Control Panel)
     // ----------------------------------------------------
-    let globalOrders = []; // ตัวแปรเก็บข้อมูลบิลไว้ใช้ตอนคลิก
+    let globalOrders = []; 
 
     function loadOrderList() {
       setLoading(true, "LOADING ORDERS...");
@@ -391,7 +393,6 @@
       .then(data => {
         globalOrders = data;
         
-        // เรียงลำดับ: ยังไม่ปริ้นขึ้นก่อน
         data.sort((a, b) => {
           if (a.printed !== b.printed) return a.printed ? 1 : -1;
           return b.doc.localeCompare(a.doc); 
@@ -403,10 +404,8 @@
            return;
         }
 
-        // วาดการ์ดรายการ (ใส่ onclick="selectOrder" ไว้ให้แล้ว)
         listDiv.innerHTML = data.map(o => {
           if (!o.printed) {
-            // ยังไม่ปริ้น (สีส้ม)
             return `
             <div class="flex items-center justify-between p-4 bg-[#111111] rounded-xl border border-[#D95F29]/40 hover:border-[#D95F29] cursor-pointer transition-all" onclick="selectOrder('${o.doc}')">
               <div class="flex flex-col gap-1.5">
@@ -422,7 +421,6 @@
               </div>
             </div>`;
           } else {
-            // ปริ้นแล้ว (สีเทา)
             return `
             <div class="flex items-center justify-between p-4 bg-[#111111] rounded-xl border border-[#33312F] opacity-60 hover:opacity-100 cursor-pointer transition-all" onclick="selectOrder('${o.doc}')">
               <div class="flex flex-col gap-1.5">
@@ -447,19 +445,19 @@
       .finally(() => setLoading(false));
     }
 
-    // ฟังก์ชันทำงานเวลาคลิกที่บิล
+    // ฟังก์ชันทำงานเวลาคลิกที่บิล (แก้ไขเรียบร้อยแล้ว)
     function selectOrder(docNo) {
       let order = globalOrders.find(o => o.doc === docNo);
       if(!order) return;
 
-      // อัปเดตข้อความในแผง Control Panel ด้านล่าง
       document.getElementById('panelDocNo').innerText = order.doc;
       document.getElementById('pdfDocNo').value = order.doc; 
       document.getElementById('panelDate').innerText = order.date || "-";
       document.getElementById('panelNote').innerText = order.note || "ไม่มีหมายเหตุ";
 
-      let actionDiv = document.getElementById('      if(order.printed) {
-        // [ถ้าปริ้นแล้ว] - โชว์ปุ่มเปิดเอกสาร / ส่งเมล / สั่งใหม่
+      let actionDiv = document.getElementById('panelActions');
+
+      if(order.printed) {
         actionDiv.innerHTML = `
           <div class="space-y-3">
             <button onclick="if('${order.url}') { window.open('${order.url}', '_blank'); } else { alert('ไม่พบลิงก์ไฟล์ PDF'); }" class="w-full bg-[#1A1A1A] hover:bg-[#222222] text-[#D95F29] py-3 rounded-xl text-[13px] font-bold tracking-wide flex items-center justify-center gap-2 border border-[#33312F] transition-all">
@@ -476,10 +474,7 @@
             </div>
           </div>
         `;
-      }
-
       } else {
-        // [ถ้ายังไม่ปริ้น] - โชว์ปุ่มสั่งปริ้นใหญ่ๆ 
         actionDiv.innerHTML = `
           <div class="space-y-3">
             <div class="text-center text-[#726E68] text-[12px] py-3 bg-[#1A1A1A] rounded-xl border border-[#33312F]">
