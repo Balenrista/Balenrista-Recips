@@ -50,7 +50,6 @@
       </button>
     </div>
 
-    <!-- ================= แท็บที่ 1: รับออเดอร์ ================= -->
     <div id="OrderTab" class="tabcontent space-y-4" style="display:block;">
       <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 space-y-4 shadow-lg">
         <div class="flex items-center gap-2 mb-2">
@@ -116,7 +115,6 @@
       </button>
     </div>
 
-    <!-- ================= แท็บที่ 2: ปริ้นท์ PDF (แยกปุ่มการทำงาน) ================= -->
     <div id="PrintTab" class="tabcontent space-y-4" style="display:none;">
       <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 space-y-5 shadow-lg">
         <div class="flex items-center gap-2 mb-2">
@@ -132,7 +130,6 @@
           <input type="email" id="pdfEmail" placeholder="email@example.com" class="w-full bg-[#0A0A0A] border border-[#33312F] rounded-lg p-3 text-white focus:border-[#726E68] outline-none mt-1">
         </div>
         
-        <!-- แถบปุ่มกดแบบแยกจากกันอย่างชัดเจนตามต้องการ -->
         <div class="grid grid-cols-2 gap-3 pt-1">
           <button id="btnPrintOnly" onclick="triggerPDF(false)" class="bg-[#33312F] hover:bg-[#4a4744] text-white py-4 rounded-xl font-bold tracking-wide transition duration-300 flex items-center justify-center gap-2 shadow-md">
             <i class="ph-bold ph-printer text-xl"></i> Print PDF
@@ -153,7 +150,6 @@
       </div>
     </div>
 
-    <!-- ================= แท็บที่ 3: ฐานลูกค้า ================= -->
     <div id="CustomerTab" class="tabcontent space-y-4" style="display:none;">
       <div class="bg-[#1A1A1A] border border-[#33312F] rounded-2xl p-5 space-y-4 shadow-lg">
          <div class="flex items-center gap-2 mb-4">
@@ -184,10 +180,9 @@
 
   </div>
 
-  <!-- JavaScript Logic -->
   <script>
     // 🔴 อย่าลืมเปลี่ยนเป็น Web App URL ล่าสุดที่คุณกดอัปเดตเวอร์ชันมานะครับ 🔴
-    const API_URL = "https://script.google.com/macros/s/AKfycbyl7z71wKkVDjubVxc0nZtICykC_4Z93Lo7QvatGRTgD3kWnRk0Peo7kaunuHrKzVfS/exec"; 
+    const API_URL = "https://script.google.com/macros/s/AKfycbyK_NyYWbvpICI0G4Q0gpoUIfjsq43fAHRa2-r0qrEDjqjCiNRvAJOYNfIUz8K8j-Cm/exec"; 
     
     let menuDataList = [];
     let currentItems = [];
@@ -332,7 +327,6 @@
       });
     }
 
-    // ฟังก์ชันรับแรงกดจาก 2 ปุ่มแยกกัน (Print PDF / Send Email)
     function triggerPDF(isEmailAction) {
       let docNo = document.getElementById("pdfDocNo").value;
       let email = document.getElementById("pdfEmail").value;
@@ -405,7 +399,6 @@
           <div class="flex justify-between items-center p-3 bg-[#0A0A0A] rounded-lg border ${o.printed ? 'border-green-900/40 bg-green-950/5' : 'border-red-900/50 bg-red-950/5'} cursor-pointer hover:bg-[#1A1A1A] transition" onclick="document.getElementById('pdfDocNo').value='${o.doc}'">
             <div class="space-y-0.5">
               <div class="text-white font-bold text-sm tracking-wide">${o.doc}</div>
-              <!-- อัปเดตแสดงชื่อลูกค้าข้ามชีท และวันที่ตรงตามที่คุณต้องการ -->
               <div class="text-[11px] text-[#A3A019] font-medium flex items-center gap-1">
                 <i class="ph ph-user"></i> Customer: ${o.customer}
               </div>
@@ -415,8 +408,6 @@
             </div>
             <div class="flex items-center gap-2">
               ${o.url ? `<button onclick="event.stopPropagation(); window.open('${o.url}', '_blank');" class="text-blue-400 hover:text-blue-300 text-xs bg-[#33312F] px-2.5 py-1.5 rounded flex items-center gap-1 transition"><i class="ph ph-eye"></i> View</button>` : ''}
-              
-              <!-- บิลสถานะรูปแบบภาษาอังกฤษ -->
               <span class="${o.printed ? 'text-green-400 bg-green-950/50 border border-green-800/40' : 'text-amber-400 bg-amber-950/50 border border-amber-800/40'} font-medium text-[11px] px-2.5 py-1 rounded tracking-wider">
                 ${o.printed ? 'Printed' : 'Pending'}
               </span>
